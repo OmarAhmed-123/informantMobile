@@ -4,6 +4,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_part_1/CreateAccountPage.dart';
 import 'package:project_part_1/ResetPasswordPage.dart';
+import 'camera_page.dart'; // Import your CameraPage here
+
+// number 3 in pdf
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -89,7 +92,14 @@ class _SignInPageState extends State<SignInPage> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle sign in
+                  // Navigate to CameraPage when sign-in button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const CameraPage(), // Change to your CameraPage
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
