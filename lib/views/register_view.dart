@@ -172,8 +172,9 @@ class _RegisterViewState extends State<RegisterView>
                                 _creditCardController.text,
                               );
                               if (success && mounted) {
+                                // Navigate to OTP verification page
                                 Navigator.pushReplacementNamed(
-                                    context, '/home');
+                                    context, '/otp_verification');
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

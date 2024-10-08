@@ -6,6 +6,7 @@ import 'view_models/auth_view_model.dart';
 import 'views/register_view.dart';
 import 'views/login_view.dart';
 import 'views/home_view.dart';
+import 'views/otp_verification_view.dart';
 
 void main() {
   runApp(
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),
+        '/otp_verification': (context) => const OtpVerificationView(),
         '/home': (context) => const HomeView(),
       },
     );
