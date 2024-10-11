@@ -1,6 +1,7 @@
-// ignore_for_file: sort_child_properties_last
+// ignore_for_file: sort_child_properties_last, unused_import
 
 import 'package:flutter/material.dart';
+import 'package:graduation_part1/models/ad.dart';
 import '../view_models/ad_view_model.dart';
 
 class AdDetailView extends StatelessWidget {

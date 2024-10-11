@@ -3,16 +3,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'view_models/auth_view_model.dart';
+import 'view_models/ad_view_model.dart';
 import 'views/register_view.dart';
 import 'views/login_view.dart';
 import 'views/home_view.dart';
 import 'views/otp_verification_view.dart';
+import 'services/api_service.dart';
 
 void main() {
+  final apiService = ApiService(
+      baseUrl:
+          'http://192.168.1.100:3000'); // Replace with your local IP address
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => AdViewModel(apiService)),
       ],
       child: const MyApp(),
     ),

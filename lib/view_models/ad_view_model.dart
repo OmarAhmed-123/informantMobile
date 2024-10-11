@@ -1,45 +1,47 @@
-// ignore_for_file: prefer_final_fields
+// ignore_for_file: avoid_print
 
 import 'package:flutter/foundation.dart';
-
-class Ad {
-  final String id;
-  final String name;
-  final String description;
-  final double price;
-  final String imageUrl;
-  final DateTime createdAt;
-  final double earnings;
-
-  Ad(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.price,
-      required this.createdAt,
-      required this.earnings,
-      required this.imageUrl});
-}
+import '../models/ad.dart';
+import '../services/api_service.dart';
 
 class AdViewModel with ChangeNotifier {
   List<Ad> _ads = [];
   double _totalIncome = 0;
+  final ApiService _apiService;
+
+  AdViewModel(this._apiService);
 
   List<Ad> get ads => _ads;
   double get totalIncome => _totalIncome;
 
-  void addAd(Ad ad) {
-    _ads.add(ad);
-    notifyListeners();
+  Future<void> fetchAds() async {
+    try {
+      _ads = await _apiService.fetchAds();
+      _calculateTotalIncome();
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching ads: $e');
+    }
+  }
+
+  Future<void> addAd(Ad ad) async {
+    try {
+      final newAd = await _apiService.createAd(ad);
+      _ads.add(newAd);
+      _calculateTotalIncome();
+      notifyListeners();
+    } catch (e) {
+      print('Error creating ad: $e');
+    }
   }
 
   void removeAd(String id) {
     _ads.removeWhere((ad) => ad.id == id);
+    _calculateTotalIncome();
     notifyListeners();
   }
 
-  void updateTotalIncome(double amount) {
-    _totalIncome += amount;
-    notifyListeners();
+  void _calculateTotalIncome() {
+    _totalIncome = _ads.fold(0, (sum, ad) => sum + ad.earnings);
   }
 }

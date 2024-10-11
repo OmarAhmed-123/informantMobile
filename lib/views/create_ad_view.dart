@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:graduation_part1/models/ad.dart';
 import 'package:provider/provider.dart';
 import '../view_models/ad_view_model.dart';
 import 'dart:math';
