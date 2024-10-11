@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:graduation_part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -173,8 +174,19 @@ class _RegisterViewState extends State<RegisterView>
                               );
                               if (success && mounted) {
                                 // Navigate to OTP verification page
-                                Navigator.pushReplacementNamed(
-                                    context, '/otp_verification');
+                                HttpRequest.post({
+                                  "endPoint": "/user/signup",
+                                  "password": _passwordController.text,
+                                  "username": _usernameController.text,
+                                  "email": _emailController.text,
+                                  "details": "NOT IMPLEMENTED",
+                                  "confrimPassword": _passwordController.text,
+                                  "creditCard": _creditCardController.text
+                                }).then((res) {
+                                  if(res.statusCode == 200)
+                                  Navigator.pushReplacementNamed(
+                                      context, '/otp_verification');
+                                });
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(

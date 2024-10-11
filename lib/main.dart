@@ -13,7 +13,7 @@ import 'services/api_service.dart';
 void main() {
   final apiService = ApiService(
       baseUrl:
-          'http://192.168.1.100:3000'); // Replace with your local IP address
+          'http://localhost:58824'); // Replace with your local IP address
 
   runApp(
     MultiProvider(
@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/register',
+      initialRoute: '/signup',
       routes: {
-        '/register': (context) => const RegisterView(),
+        '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),
         '/otp_verification': (context) => const OtpVerificationView(),
         '/home': (context) => const HomeView(),

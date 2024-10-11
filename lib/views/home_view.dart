@@ -17,7 +17,7 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Welcome, ${authViewModel.email ?? "User"}!'), // Access the email field
+            'Welcome, ${authViewModel.username ?? "User"}!'), // Access the email field
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

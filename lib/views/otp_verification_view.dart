@@ -1,12 +1,12 @@
 // ignore_for_file: unused_import, use_super_parameters, library_private_types_in_public_api, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:graduation_part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({Key? key}) : super(key: key);
-
   @override
   _OtpVerificationViewState createState() => _OtpVerificationViewState();
 }
@@ -42,6 +42,11 @@ class _OtpVerificationViewState extends State<OtpVerificationView>
 
   @override
   Widget build(BuildContext context) {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    void initState() {
+      super.initState();
+      HttpRequest.get("/user/sendotp?email=${authViewModel.email}");
+    }
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -133,8 +138,18 @@ class _OtpVerificationViewState extends State<OtpVerificationView>
                                   .join();
                               // Here you would typically verify the OTP with your backend
                               // For now, we'll just print it and navigate to the home page
-                              print('Entered OTP: $otp');
-                              Navigator.pushReplacementNamed(context, '/home');
+
+                              var response = HttpRequest.post({
+                                "endPoint": "/user/verify",
+                                "otp": otp,
+                                "email": "${authViewModel.email}"
+                              }).then((res) {
+                                if (res.statusCode == 200) {
+                                  print('Entered OTP: $otp');
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                }
+                              });
                             }
                           },
                           child: const Text('Verify',
@@ -143,11 +158,17 @@ class _OtpVerificationViewState extends State<OtpVerificationView>
                         const SizedBox(height: 16),
                         TextButton(
                           onPressed: () {
-                            // Implement resend OTP logic here
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('OTP resent successfully')),
-                            );
+                            // Implement HTTP resend OTP logic here
+                            var response = HttpRequest.get(
+                                    "/user/sendotp?email=${authViewModel.email}")
+                                .then((var res) {
+                              if (res.statusCode == 200) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('OTP is resent!')),
+                                );
+                              }
+                            });
                           },
                           child: const Text(
                             'Resend OTP',

@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:graduation_part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 import 'home_view.dart';
@@ -80,7 +81,7 @@ class _LoginViewState extends State<LoginView>
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
-                        hintText: 'Enter your email or username',
+                        hintText: 'Enter your username',
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.1),
                         border: OutlineInputBorder(
@@ -88,7 +89,7 @@ class _LoginViewState extends State<LoginView>
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email or username';
+                          return 'Please enter your username';
                         }
                         return null;
                       },
@@ -123,11 +124,16 @@ class _LoginViewState extends State<LoginView>
                             _passwordController.text,
                           );
                           if (success) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeView()),
-                            );
+                            HttpRequest.post({"endPoint":"/user/login","password": _passwordController.text, "username": _emailController.text})
+                                .then((res) => {
+                                      if (res.statusCode == 200)
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeView()),
+                                        )
+                                    });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
