@@ -7,6 +7,7 @@ import 'view_models/ad_view_model.dart';
 import 'views/register_view.dart';
 import 'views/login_view.dart';
 import 'views/home_view.dart';
+import 'views/email_verification_view.dart';
 import 'views/otp_verification_view.dart';
 import 'services/api_service.dart';
 
@@ -35,13 +36,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Auth Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: '/signup',
       routes: {
         '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),
+        '/email_verification': (context) => const EmailVerificationView(),
         '/otp_verification': (context) => const OtpVerificationView(),
         '/home': (context) => const HomeView(),
       },
