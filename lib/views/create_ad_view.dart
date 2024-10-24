@@ -28,7 +28,6 @@ class _CreateAdViewState extends State<CreateAdView> {
     final pickedFile = isVideo
         ? await picker.pickVideo(source: source)
         : await picker.pickImage(source: source);
-
     setState(() {
       if (pickedFile != null) {
         _media =

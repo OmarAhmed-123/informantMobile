@@ -14,8 +14,6 @@ dependencies:
   provider: ^6.1.2
   video_player: ^2.9.2
   assets:
-    - assets/login.png
-   # - assets/signup.png
 
 dev_dependencies:
   flutter_test:

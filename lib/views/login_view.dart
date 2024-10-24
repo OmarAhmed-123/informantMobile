@@ -1,9 +1,5 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors
-
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages
 import 'package:flutter/material.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
-import 'package:provider/provider.dart';
-import '../view_models/auth_view_model.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'forgot_password_view.dart';
@@ -65,7 +61,7 @@ class _LoginViewState extends State<LoginView>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      './../../assets/login.png',
+                      '../../assets/login.png', // Adjusted path if needed
                       width: 150,
                       height: 150,
                     ),
@@ -114,36 +110,19 @@ class _LoginViewState extends State<LoginView>
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final authViewModel = Provider.of<AuthViewModel>(
-                              context,
-                              listen: false);
-                          bool success = await authViewModel.login(
-                            _emailController.text,
-                            _passwordController.text,
+                          // For now, just show a success message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Login successful!')),
                           );
-                          if (success) {
-                            HttpRequest.post({
-                              "endPoint": "/user/login",
-                              "password": _passwordController.text,
-                              "username": _emailController.text
-                            }).then((res) => {
-                                  if (res.statusCode == 200)
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HomeView()),
-                                    )
-                                });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Login failed. Please try again.')),
-                            );
-                          }
+
+                          // Navigate to the HomeView for demo purposes
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeView()),
+                          );
                         }
                       },
                       child: const Text('Sign In'),

@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +18,6 @@ class _RegisterViewState extends State<RegisterView>
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _creditCardController = TextEditingController();
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -178,29 +176,39 @@ class _RegisterViewState extends State<RegisterView>
                               final authViewModel = Provider.of<AuthViewModel>(
                                   context,
                                   listen: false);
+
+                              // Attempt to register the user using the AuthViewModel
                               final success = await authViewModel.register(
                                 _usernameController.text,
                                 _passwordController.text,
                                 _emailController.text,
                                 _creditCardController.text,
                               );
+
                               if (success && mounted) {
                                 // Simulate a registration HTTP request
                                 HttpRequest.post({
-                                  "endPoint": "/user/signup",
+                                  "endPoint":
+                                      "/user/signup", // API endpoint for user registration
                                   "password": _passwordController.text,
                                   "username": _usernameController.text,
                                   "email": _emailController.text,
-                                  "details": "NOT IMPLEMENTED",
-                                  "confirmPassword": _passwordController.text,
-                                  "creditCard": _creditCardController.text
+                                  "details":
+                                      "NOT IMPLEMENTED", // Placeholder for additional details
+                                  "confirmPassword": _passwordController
+                                      .text, // Confirm password for registration
+                                  "creditCard": _creditCardController
+                                      .text // Credit card information
                                 }).then((res) {
+                                  // Check the response status code
                                   if (res.statusCode == 200) {
+                                    // On success, navigate to OTP verification page
                                     Navigator.pushReplacementNamed(
                                         context, '/otp_verification');
                                   }
                                 });
                               } else {
+                                // Show error message if registration failed
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
