@@ -28,7 +28,7 @@ class AdDetailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Image.network(
-                ad.imageUrl,
+                ad.imageUrl as String,
                 height: 300,
                 fit: BoxFit.cover,
               ),

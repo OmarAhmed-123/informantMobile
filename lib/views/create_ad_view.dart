@@ -1,11 +1,11 @@
 // ignore_for_file: use_super_parameters, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/models/ad.dart';
 import 'package:provider/provider.dart';
 import '../view_models/ad_view_model.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
 
 class CreateAdView extends StatefulWidget {
   const CreateAdView({Key? key}) : super(key: key);
@@ -19,25 +19,18 @@ class _CreateAdViewState extends State<CreateAdView> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
-  File? _media; // To hold the selected image or video file
-  VideoPlayerController? _videoController; // To control video playback
+  File? _mediaFile; // To hold the selected image file
 
-  // Function to pick media from the specified source
-  Future<void> _getMedia(ImageSource source, bool isVideo) async {
+  // Function to pick an image from the gallery or camera
+  Future<void> _getImage(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = isVideo
-        ? await picker.pickVideo(source: source)
-        : await picker.pickImage(source: source);
+    // Pick image from the specified source (Gallery or Camera)
+    final pickedFile = await picker.pickImage(source: source);
+
     setState(() {
       if (pickedFile != null) {
-        _media =
-            File(pickedFile.path); // Store the media in the _media variable
-        if (isVideo) {
-          _videoController = VideoPlayerController.file(_media!)
-            ..initialize().then((_) {
-              setState(() {}); // Refresh the UI after initialization
-            });
-        }
+        _mediaFile =
+            File(pickedFile.path); // Store the image in the _mediaFile variable
       }
     });
   }
@@ -56,8 +49,7 @@ class _CreateAdViewState extends State<CreateAdView> {
                   child: const Text('Gallery'),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _getMedia(
-                        ImageSource.gallery, false); // Open gallery for image
+                    _getImage(ImageSource.gallery); // Open gallery
                   },
                 ),
                 const Padding(padding: EdgeInsets.all(8.0)),
@@ -65,42 +57,7 @@ class _CreateAdViewState extends State<CreateAdView> {
                   child: const Text('Camera'),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _showMediaTypeDialog(); // Show dialog to choose between photo and video
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Dialog for selecting media type (Photo or Video)
-  void _showMediaTypeDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Choose Media Type'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: const Text('Photo'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _getMedia(
-                        ImageSource.camera, false); // Open camera for image
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(8.0)),
-                GestureDetector(
-                  child: const Text('Video'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _getMedia(
-                        ImageSource.camera, true); // Open camera for video
+                    _getImage(ImageSource.camera); // Open camera
                   },
                 ),
               ],
@@ -116,7 +73,6 @@ class _CreateAdViewState extends State<CreateAdView> {
     _nameController.dispose();
     _descriptionController.dispose();
     _priceController.dispose();
-    _videoController?.dispose(); // Dispose video controller
     super.dispose();
   }
 
@@ -149,17 +105,9 @@ class _CreateAdViewState extends State<CreateAdView> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    // Display selected media or show a placeholder
-                    child: _media != null
-                        ? (_media!.path.endsWith('.mp4')
-                            ? _videoController!.value.isInitialized
-                                ? AspectRatio(
-                                    aspectRatio:
-                                        _videoController!.value.aspectRatio,
-                                    child: VideoPlayer(_videoController!),
-                                  )
-                                : Container()
-                            : Image.file(_media!, fit: BoxFit.cover))
+                    // Display selected image or show a placeholder
+                    child: _mediaFile != null
+                        ? Image.file(_mediaFile!, fit: BoxFit.cover)
                         : Icon(Icons.camera_alt,
                             size: 50, color: Colors.grey[600]),
                   ),
@@ -242,12 +190,19 @@ class _CreateAdViewState extends State<CreateAdView> {
                       final newAd = Ad(
                         id: DateTime.now().millisecondsSinceEpoch.toString(),
                         name: _nameController.text,
-                        description: _descriptionController.text,
+                        details: _descriptionController.text,
                         price: double.parse(_priceController.text),
-                        imageUrl:
-                            _media?.path ?? 'https://via.placeholder.com/150',
+                        imageUrl: _mediaFile != null
+                            ? [_mediaFile!.path]
+                            : ['https://via.placeholder.com/150'],
                         createdAt: DateTime.now(),
                         earnings: 0.0,
+                        stars: 0,
+                        potentialRevenue: 0.0,
+                        availablePlaces: 0,
+                        creatorName: 'New Creator',
+                        description:
+                            _descriptionController.text, // Add this line
                       );
                       adViewModel.addAd(newAd);
                       Navigator.pop(context);

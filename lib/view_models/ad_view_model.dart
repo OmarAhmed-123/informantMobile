@@ -1,3 +1,4 @@
+/*
 // ignore_for_file: avoid_print
 
 import 'package:flutter/foundation.dart';
@@ -43,5 +44,28 @@ class AdViewModel with ChangeNotifier {
 
   void _calculateTotalIncome() {
     _totalIncome = _ads.fold(0, (sum, ad) => sum + ad.earnings);
+  }
+}
+*/
+
+import 'package:flutter/foundation.dart';
+import '../models/ad.dart';
+import '../data/sample_ads.dart';
+
+class AdViewModel extends ChangeNotifier {
+  List<Ad> _ads = [];
+  List<Ad> get ads => _ads;
+
+  Future<void> fetchAds() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+
+    _ads = sampleAdsData.map((json) => Ad.fromJson(json)).toList();
+    notifyListeners();
+  }
+
+  void addAd(Ad ad) {
+    _ads.add(ad);
+    notifyListeners();
   }
 }

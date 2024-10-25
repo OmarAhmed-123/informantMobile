@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters
+// ignore_for_file: use_super_parameters, unused_local_variable, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,14 +13,13 @@ import 'services/api_service.dart';
 
 void main() {
   final apiService = ApiService(
-      baseUrl:
-          'http://localhost:58824'); // Replace with your local IP address
+      baseUrl: 'http://localhost:58824'); // Replace with your local IP address
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => AdViewModel(apiService)),
+        //ChangeNotifierProvider(create: (_) => AdViewModel(apiService)),
       ],
       child: const MyApp(),
     ),

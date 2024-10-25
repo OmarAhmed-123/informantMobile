@@ -1,12 +1,12 @@
 //bar of home
 
-// ignore_for_file: file_names, unused_local_variable
+// ignore_for_file: file_names, unused_local_variable, library_prefixes
 
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/home_view.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
-import 'ad_list_view.dart';
+import 'ad_list_view.dart' as adView; // Added 'as' to prefix ad_list_view
 import 'create_ad_view.dart';
 import 'profit_view.dart';
 
@@ -55,7 +55,9 @@ class HomeView1 extends StatelessWidget {
                 () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const AdListView()),
+                    MaterialPageRoute(
+                        builder: (_) => const adView
+                            .AdListView()), // Using the prefixed AdListView
                   );
                 },
               ),
