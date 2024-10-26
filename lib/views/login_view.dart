@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages
 import 'package:flutter/material.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'forgot_password_view.dart';
@@ -113,16 +114,31 @@ class _LoginViewState extends State<LoginView>
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // For now, just show a success message
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Login successful!')),
-                          );
-
+                          HttpRequest.post({"endPoint": "/user/login","username":_emailController.text,"password":_passwordController.text})
+                              .then((res) => {
+                                    if (res.statusCode == 200)
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content:
+                                                  Text('Login successful!')),
+                                        ),
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HomeView()))
+                                      }
+                                    else
+                                      {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Error: Status Code ${res.statusCode}')))
+                                      }
+                                  });
                           // Navigate to the HomeView for demo purposes
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeView()),
-                          );
                         }
                       },
                       child: const Text('Sign In'),

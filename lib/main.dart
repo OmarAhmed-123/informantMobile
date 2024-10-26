@@ -1,6 +1,9 @@
 // ignore_for_file: use_super_parameters, unused_local_variable, unused_import
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'view_models/auth_view_model.dart';
 import 'view_models/ad_view_model.dart';
@@ -12,6 +15,7 @@ import 'views/otp_verification_view.dart';
 import 'services/api_service.dart';
 
 void main() {
+    HttpOverrides.global = MyHttpOverrides();//while using Not certificate ssl
   final apiService = ApiService(
       baseUrl: 'http://localhost:58824'); // Replace with your local IP address
 
