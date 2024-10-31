@@ -61,8 +61,13 @@ class _LoginViewState extends State<LoginView>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Image.network(
+                    //   'https://informant122.ddns.net:7125/files/image?imgName=man.png&type=profile', // Adjusted path if needed
+                    //   width: 150,
+                    //   height: 150,
+                    // ),
                     Image.asset(
-                      '../../assets/login.png', // Adjusted path if needed
+                      'assets/login1.png',
                       width: 150,
                       height: 150,
                     ),
@@ -114,30 +119,31 @@ class _LoginViewState extends State<LoginView>
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // For now, just show a success message
-                          HttpRequest.post({"endPoint": "/user/login","username":_emailController.text,"password":_passwordController.text})
-                              .then((res) => {
-                                    if (res.statusCode == 200)
-                                      {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content:
-                                                  Text('Login successful!')),
-                                        ),
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const HomeView()))
-                                      }
-                                    else
-                                      {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    'Error: Status Code ${res.statusCode}')))
-                                      }
-                                  });
+                          HttpRequest.post({
+                            "endPoint": "/user/login",
+                            "username": _emailController.text,
+                            "password": _passwordController.text
+                          }).then((res) => {
+                                if (res.statusCode == 200)
+                                  {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Login successful!')),
+                                    ),
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeView()))
+                                  }
+                                else
+                                  {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Error: Status Code ${res.statusCode}')))
+                                  }
+                              });
                           // Navigate to the HomeView for demo purposes
                         }
                       },
