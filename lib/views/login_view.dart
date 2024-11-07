@@ -50,7 +50,7 @@ class _LoginViewState extends State<LoginView>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blue[900]!, Colors.black],
+              colors: [Colors.purple[700]!, Colors.blue[500]!],
             ),
           ),
           child: Center(
@@ -61,11 +61,6 @@ class _LoginViewState extends State<LoginView>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Image.network(
-                    //   'https://informant122.ddns.net:7125/files/image?imgName=man.png&type=profile', // Adjusted path if needed
-                    //   width: 150,
-                    //   height: 150,
-                    // ),
                     Image.asset(
                       'assets/login1.png',
                       width: 150,
@@ -149,7 +144,7 @@ class _LoginViewState extends State<LoginView>
                       },
                       child: const Text('Sign In'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 50, vertical: 15),
                       ),
@@ -164,7 +159,7 @@ class _LoginViewState extends State<LoginView>
                         );
                       },
                       child: const Text('Forgot password?',
-                          style: TextStyle(color: Colors.white70)),
+                          style: TextStyle(color: Colors.white)),
                     ),
                     const SizedBox(height: 16),
                     TextButton(
