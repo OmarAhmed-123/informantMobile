@@ -20,7 +20,7 @@ class HomeView1 extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
-          icon: Image.asset(''),
+          icon: Image.asset('assets/wifi.png'),
           onPressed: () {},
         ),
         actions: <Widget>[
