@@ -3,7 +3,9 @@
 // ignore_for_file: file_names, unused_local_variable, library_prefixes
 
 import 'package:flutter/material.dart';
+//import 'package:graduation___part1/views/ads_manager_profile.dart';
 import 'package:graduation___part1/views/home_view.dart';
+import 'package:graduation___part1/views/profile_page.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 import 'ad_list_view.dart' as adView; // Added 'as' to prefix ad_list_view
@@ -21,7 +23,36 @@ class HomeView1 extends StatelessWidget {
         backgroundColor: Colors.black,
         leading: IconButton(
           icon: Image.asset('assets/wifi.png'),
-          onPressed: () {},
+          /*
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AdsManagerProfile()),
+            );
+          },
+          */
+          onPressed: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ProfilePage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOutCubic;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+                  return SlideTransition(
+                      position: offsetAnimation, child: child);
+                },
+                transitionDuration: Duration(milliseconds: 500),
+              ),
+            );
+          },
         ),
         actions: <Widget>[
           IconButton(
