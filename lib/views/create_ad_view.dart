@@ -658,6 +658,7 @@ class _CreateAdViewState extends State<CreateAdView>
 // ignore_for_file: use_super_parameters, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/models/ad.dart';
+import 'package:graduation___part1/views/camera_view.dart';
 import 'package:provider/provider.dart';
 import '../view_models/ad_view_model.dart';
 import 'dart:io';
@@ -696,6 +697,50 @@ class _CreateAdViewState extends State<CreateAdView>
     _animationController.forward();
   }
 
+  // Update the _pickMedia method in CreateAdView
+  Future<void> _pickMedia(ImageSource source, {bool isVideo = false}) async {
+    if (source == ImageSource.camera && !isVideo) {
+      final result = await Navigator.push<List<File>>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CameraView(),
+        ),
+      );
+
+      if (result != null && result.isNotEmpty) {
+        setState(() {
+          _mediaFiles.addAll(result);
+          _isVideo.addAll(List.generate(result.length, (_) => false));
+          _videoControllers.addAll(List.generate(result.length, (_) => null));
+        });
+      }
+    } else if (isVideo) {
+      final picker = ImagePicker();
+      final XFile? videoFile = await picker.pickVideo(source: source);
+      if (videoFile != null) {
+        final videoController =
+            VideoPlayerController.file(File(videoFile.path));
+        await videoController.initialize();
+        setState(() {
+          _mediaFiles.add(File(videoFile.path));
+          _isVideo.add(true);
+          _videoControllers.add(videoController);
+        });
+      }
+    } else {
+      final picker = ImagePicker();
+      final List<XFile> images = await picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        setState(() {
+          _mediaFiles.addAll(images.map((image) => File(image.path)));
+          _isVideo.addAll(List.generate(images.length, (_) => false));
+          _videoControllers.addAll(List.generate(images.length, (_) => null));
+        });
+      }
+    }
+  }
+
+/*
   Future<void> _pickMedia(ImageSource source, {bool isVideo = false}) async {
     final picker = ImagePicker();
     if (isVideo) {
@@ -721,7 +766,7 @@ class _CreateAdViewState extends State<CreateAdView>
       }
     }
   }
-
+*/
   void _showMediaSourceDialog() {
     showDialog(
       context: context,
