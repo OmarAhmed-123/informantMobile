@@ -121,8 +121,9 @@ class Ad {
       'creatorName': creatorName,
     };
   }
-
+/*
   String get imageUrll => (imageUrl != null && imageUrl!.isNotEmpty)
       ? imageUrl![0]
       : 'https://via.placeholder.com/150'; // Default image if imageUrl is null or empty
+      */
 }

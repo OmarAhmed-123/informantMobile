@@ -187,9 +187,10 @@ class _LoginViewState extends State<LoginView>
 
 //that is code not include connection between backend and frontend
 */
-
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'forgot_password_view.dart';
@@ -208,6 +209,8 @@ class _LoginViewState extends State<LoginView>
   final _passwordController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  bool _isBiometricAvailable = false;
 
   @override
   void initState() {
@@ -219,6 +222,44 @@ class _LoginViewState extends State<LoginView>
     _fadeAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _animationController.forward();
+    _checkBiometrics();
+  }
+
+  Future<void> _checkBiometrics() async {
+    try {
+      final canCheckBiometrics = await _localAuth.canCheckBiometrics;
+      final isDeviceSupported = await _localAuth.isDeviceSupported();
+      setState(() {
+        _isBiometricAvailable = canCheckBiometrics && isDeviceSupported;
+      });
+    } on PlatformException catch (_) {
+      setState(() {
+        _isBiometricAvailable = false;
+      });
+    }
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    try {
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to sign in',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+
+      if (authenticated) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+        );
+      }
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Authentication error: ${e.message}')),
+      );
+    }
   }
 
   @override
@@ -363,6 +404,32 @@ class _LoginViewState extends State<LoginView>
                         ),
                       ),
                     ),
+                    if (_isBiometricAvailable) ...[
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: _authenticateWithBiometrics,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.purple[700],
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 5,
+                        ),
+                        icon: const Icon(Icons.fingerprint),
+                        label: const Text(
+                          'Sign in with Biometrics',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {

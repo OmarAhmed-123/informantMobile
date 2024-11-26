@@ -1,7 +1,7 @@
 name: graduation___part1
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 environment:
   sdk: '>=3.4.3 <4.0.0'
 
@@ -17,6 +17,8 @@ dependencies:
   animations: ^2.0.11
   google_fonts: ^6.2.1
   camera: ^0.11.0+2
+  local_auth: ^2.1.8
+  cupertino_icons: ^1.0.2
 
 flutter:
   uses-material-design: true
