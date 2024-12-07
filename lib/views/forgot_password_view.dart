@@ -16,7 +16,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
   final _confirmPasswordController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-
+  bool visiblePassword3 = false;
+  bool visiblePassword4 = false;
   @override
   void initState() {
     super.initState();
@@ -40,12 +41,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reset Password'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //   title: const Text('Reset Password'),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      // ),
+      // extendBodyBehindAppBar: true,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Container(
@@ -53,7 +54,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blue[900]!, Colors.black],
+              colors: [Colors.purple[700]!, Colors.blue[500]!],
             ),
           ),
           child: Center(
@@ -74,13 +75,27 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                     const SizedBox(height: 32),
                     TextFormField(
                       controller: _newPasswordController,
-                      obscureText: true,
+                      obscureText: !visiblePassword3,
                       decoration: InputDecoration(
                         hintText: 'Enter your new Password',
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.1),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            visiblePassword3
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.white70,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              visiblePassword3 = !visiblePassword3;
+                            });
+                          },
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -92,13 +107,27 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _confirmPasswordController,
-                      obscureText: true,
+                      obscureText: !visiblePassword4,
                       decoration: InputDecoration(
                         hintText: 'Re-enter your new Password',
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.1),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            visiblePassword4
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.white70,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              visiblePassword4 = !visiblePassword4;
+                            });
+                          },
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

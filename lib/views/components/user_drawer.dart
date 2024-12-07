@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import '../../view_models/auth_view_model.dart';
 import '../ad_list_view.dart';
 import '../create_ad_view.dart';
-import '../profit_view.dart';
-import '../statistics_view.dart';
+import '../Statistics.dart';
 
 class UserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
@@ -47,18 +46,12 @@ class UserDrawer extends StatelessWidget {
           ),
           _buildDrawerItem(
             context,
-            'Profit',
+            'Statistics',
             Icons.attach_money,
             () => Navigator.push(
                 context, MaterialPageRoute(builder: (_) => const ProfitView())),
           ),
-          _buildDrawerItem(
-            context,
-            'Statistics',
-            Icons.bar_chart,
-            () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const StatisticsView())),
-          ),
+          _buildDrawerItem(context, 'Log Out', Icons.logout, () {}),
         ],
       ),
     );

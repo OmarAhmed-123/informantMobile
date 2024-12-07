@@ -676,7 +676,6 @@ class _ProfitViewState extends State<State<ProfitView>>
 }
 */
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 

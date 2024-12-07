@@ -3,14 +3,17 @@
 // ignore_for_file: file_names, unused_local_variable, library_prefixes
 
 import 'package:flutter/material.dart';
-//import 'package:graduation___part1/views/ads_manager_profile.dart';
 import 'package:graduation___part1/views/home_view.dart';
-import 'package:graduation___part1/views/profile_page.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
-import 'ad_list_view.dart' as adView; // Added 'as' to prefix ad_list_view
-import 'create_ad_view.dart';
-import 'profit_view.dart';
+import 'package:graduation___part1/views/ad_list_view.dart'
+    as adView; // Added 'as' to prefix ad_list_view
+import 'package:graduation___part1/views/create_ad_view.dart';
+import 'package:graduation___part1/views/Statistics.dart';
+import 'package:graduation___part1/views/autoProfile.dart';
+import 'package:graduation___part1/views/profile.dart';
+import 'package:graduation___part1/views/autoLogin.dart';
+import 'package:graduation___part1/views/login_view.dart';
 
 class HomeView1 extends StatelessWidget {
   const HomeView1({super.key});
@@ -20,37 +23,13 @@ class HomeView1 extends StatelessWidget {
     final authViewModel = Provider.of<AuthViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.purple[700],
         leading: IconButton(
-          icon: Image.asset('assets/wifi.png'),
-          /*
+          icon: const Icon(Icons.person, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const AdsManagerProfile()),
-            );
-          },
-          */
-          onPressed: () {
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    ProfilePage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(1.0, 0.0);
-                  const end = Offset.zero;
-                  const curve = Curves.easeInOutCubic;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: curve));
-                  var offsetAnimation = animation.drive(tween);
-                  return SlideTransition(
-                      position: offsetAnimation, child: child);
-                },
-                transitionDuration: Duration(milliseconds: 500),
-              ),
+              MaterialPageRoute(builder: (context) => const ProfilePage()),
             );
           },
         ),
@@ -71,7 +50,7 @@ class HomeView1 extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue[900]!, Colors.black],
+            colors: [Colors.purple[700]!, Colors.blue[500]!],
           ),
         ),
         child: Center(
@@ -108,8 +87,21 @@ class HomeView1 extends StatelessWidget {
               const SizedBox(height: 20),
               _buildActionCard(
                 context,
-                'Profit',
-                'Review your earnings',
+                'My profile',
+                '',
+                Icons.person,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const autoProfile()),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildActionCard(
+                context,
+                'Statistics',
+                'View your ad performance',
                 Icons.attach_money,
                 () {
                   Navigator.push(
@@ -121,13 +113,11 @@ class HomeView1 extends StatelessWidget {
               const SizedBox(height: 20),
               _buildActionCard(
                 context,
-                'Statistics',
-                'View your ad performance',
-                Icons.bar_chart,
+                'Log Out',
+                '',
+                Icons.logout,
                 () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Coming soon!')),
-                  );
+                  logOut1(context);
                 },
               ),
             ],
@@ -135,6 +125,46 @@ class HomeView1 extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void logOut1(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Logout'),
+          content: Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                logOut2(context); // Perform logout
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void logOut2(BuildContext context) {
+    // Add your logout logic here
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('You have been logged out.')),
+    );
+    AutoLogin.logout3();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginView(),
+        ));
   }
 
   Widget _buildActionCard(BuildContext context, String title, String subtitle,

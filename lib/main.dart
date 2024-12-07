@@ -2,20 +2,22 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'view_models/auth_view_model.dart';
 import 'view_models/ad_view_model.dart';
 import 'views/register_view.dart';
+import 'package:flutter/material.dart';
 import 'views/login_view.dart';
 import 'views/home_view.dart';
+import 'views/autoLogin.dart';
+import 'views/forgot_password_view.dart';
 import 'views/email_verification_view.dart';
 import 'views/otp_verification_view.dart';
 import 'services/api_service.dart';
 
 void main() {
-    HttpOverrides.global = MyHttpOverrides();//while using Not certificate ssl
+  HttpOverrides.global = MyHttpOverrides(); //while using Not certificate ssl
   final apiService = ApiService(
       baseUrl: 'http://localhost:58824'); // Replace with your local IP address
 
@@ -42,13 +44,15 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/login',
+      initialRoute: '/AutoLogin',
       routes: {
         '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),
         '/email_verification': (context) => const EmailVerificationView(),
         '/otp_verification': (context) => const OtpVerificationView(),
         '/home': (context) => const HomeView(),
+        '/forgot': (context) => const ForgotPasswordView(),
+        '/AutoLogin': (context) => const AutoLogin(),
       },
     );
   }

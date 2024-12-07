@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -20,9 +19,10 @@ class HttpRequest {
   ];
   static var index = 0;
   static Future<http.Response> post(var internalBody) async {
-    try{
+    try {
       Urls = internalBody.Urls;
-    }catch(e){};
+    } catch (e) {}
+    ;
     final url = Uri.parse(Urls[HttpRequest.index] + internalBody['endPoint']);
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(internalBody);
