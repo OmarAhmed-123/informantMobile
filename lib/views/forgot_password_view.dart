@@ -1,54 +1,55 @@
 // ignore_for_file: library_private_types_in_public_api, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
 
   @override
-  _ForgotPasswordViewState createState() => _ForgotPasswordViewState();
+  forgotPasswordViewS createState() => forgotPasswordViewS();
 }
 
-class _ForgotPasswordViewState extends State<ForgotPasswordView>
+class forgotPasswordViewS extends State<ForgotPasswordView>
     with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+  final formKey = GlobalKey<FormState>();
+  final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  late AnimationController animationController;
+  late Animation<double> fadeAnimation;
   bool visiblePassword3 = false;
   bool visiblePassword4 = false;
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
-    _animationController.forward();
+    fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(animationController);
+    animationController.forward();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
+    animationController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Reset Password'),
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      // ),
-      // extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text('Reset Password'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: FadeTransition(
-        opacity: _fadeAnimation,
+        opacity: fadeAnimation,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -61,7 +62,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -74,7 +75,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                     ),
                     const SizedBox(height: 32),
                     TextFormField(
-                      controller: _newPasswordController,
+                      controller: newPasswordController,
                       obscureText: !visiblePassword3,
                       decoration: InputDecoration(
                         hintText: 'Enter your new Password',
@@ -106,7 +107,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _confirmPasswordController,
+                      controller: confirmPasswordController,
                       obscureText: !visiblePassword4,
                       decoration: InputDecoration(
                         hintText: 'Re-enter your new Password',
@@ -133,7 +134,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                         if (value == null || value.isEmpty) {
                           return 'Please re-enter your new password';
                         }
-                        if (value != _newPasswordController.text) {
+                        if (value != newPasswordController.text) {
                           return 'Passwords do not match';
                         }
                         return null;
@@ -142,8 +143,18 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView>
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          // Implement password reset logic here
+                        if (formKey.currentState!.validate()) {
+                          HttpRequest.post({
+                            "endPoint": "/user/password",
+                            "password": newPasswordController.text
+                          }).then((res) {
+                            if (res.statusCode == 200) {
+                              Navigator.pushNamed(context, '/home');
+                            }
+                          }).catchError((error) {
+                            // Handle error here, e.g., show a dialog or a Snackbar
+                            print("Error: $error");
+                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Password reset successful')),

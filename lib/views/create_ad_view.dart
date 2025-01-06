@@ -12,44 +12,43 @@ class CreateAdView extends StatefulWidget {
   const CreateAdView({Key? key}) : super(key: key);
 
   @override
-  _CreateAdViewState createState() => _CreateAdViewState();
+  CreateAdViewS createState() => CreateAdViewS();
 }
 
-class _CreateAdViewState extends State<CreateAdView>
+class CreateAdViewS extends State<CreateAdView>
     with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _priceController = TextEditingController();
-  List<File> _mediaFiles = []; // To hold multiple media files
-  List<bool> _isVideo = []; // Track which files are videos
-  List<VideoPlayerController?> _videoControllers = [];
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-  final ImagePicker _picker = ImagePicker();
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final priceController = TextEditingController();
+  List<File> mediaFiles = [];
+  List<bool> video = [];
+  List<VideoPlayerController?> videoControllers = [];
+  late AnimationController animationController;
+  late Animation<double> scaleAnimation;
+  final ImagePicker pick = ImagePicker();
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOutBack),
     );
-    _animationController.forward();
+    animationController.forward();
   }
 
-  Future<void> _initializeVideoController(File videoFile, int index) async {
+  Future<void> initiVideoController(File videoFile, int index) async {
     final controller = VideoPlayerController.file(videoFile);
     await controller.initialize();
     setState(() {
-      _videoControllers[index] = controller;
+      videoControllers[index] = controller;
     });
   }
 
-  Future<void> _getMultipleMedia(ImageSource source,
-      {bool isVideo = false}) async {
+  Future<void> getMedia(ImageSource source, {bool isVideo = false}) async {
     final picker = ImagePicker();
     if (isVideo) {
       final XFile? videoFile = await picker.pickVideo(
@@ -58,53 +57,52 @@ class _CreateAdViewState extends State<CreateAdView>
       );
       if (videoFile != null) {
         setState(() {
-          _mediaFiles.add(File(videoFile.path));
-          _isVideo.add(true);
-          _videoControllers.add(null);
+          mediaFiles.add(File(videoFile.path));
+          video.add(true);
+          videoControllers.add(null);
         });
-        await _initializeVideoController(
-            _mediaFiles.last, _mediaFiles.length - 1);
+        await initiVideoController(mediaFiles.last, mediaFiles.length - 1);
       }
     } else {
       final List<XFile> images = await picker.pickMultiImage();
       setState(() {
         for (var image in images) {
-          _mediaFiles.add(File(image.path));
-          _isVideo.add(false);
-          _videoControllers.add(null);
+          mediaFiles.add(File(image.path));
+          video.add(false);
+          videoControllers.add(null);
         }
       });
     }
   }
 
-  Future<void> _pickMedia(ImageSource source, {required bool isVideo}) async {
+  Future<void> pickMedia(ImageSource source, {required bool isVideo}) async {
     if (isVideo) {
-      final XFile? videoFile = await _picker.pickVideo(source: source);
+      final XFile? videoFile = await pick.pickVideo(source: source);
       if (videoFile != null) {
         final videoController =
             VideoPlayerController.file(File(videoFile.path));
         await videoController.initialize();
         setState(() {
-          _mediaFiles.add(File(videoFile.path));
-          _isVideo.add(true);
-          _videoControllers.add(videoController);
+          mediaFiles.add(File(videoFile.path));
+          video.add(true);
+          videoControllers.add(videoController);
         });
-        _askToPickMore(isVideo: true);
+        askToPickMore(isVideo: true);
       }
     } else {
-      final XFile? imageFile = await _picker.pickImage(source: source);
+      final XFile? imageFile = await pick.pickImage(source: source);
       if (imageFile != null) {
         setState(() {
-          _mediaFiles.add(File(imageFile.path));
-          _isVideo.add(false);
-          _videoControllers.add(null);
+          mediaFiles.add(File(imageFile.path));
+          video.add(false);
+          videoControllers.add(null);
         });
-        _askToPickMore(isVideo: false);
+        askToPickMore(isVideo: false);
       }
     }
   }
 
-  Future<void> _askToPickMore({required bool isVideo}) async {
+  Future<void> askToPickMore({required bool isVideo}) async {
     final bool? pickMore = await showDialog(
       context: context,
       builder: (context) {
@@ -125,16 +123,16 @@ class _CreateAdViewState extends State<CreateAdView>
     );
 
     if (pickMore == true) {
-      await _pickMedia(ImageSource.camera, isVideo: isVideo);
+      await pickMedia(ImageSource.camera, isVideo: isVideo);
     }
   }
 
-  void _showMediaSourceDialog() {
+  void showMedia() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ScaleTransition(
-          scale: _scaleAnimation,
+          scale: scaleAnimation,
           child: AlertDialog(
             backgroundColor: Colors.grey[900],
             shape:
@@ -146,21 +144,21 @@ class _CreateAdViewState extends State<CreateAdView>
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildMediaOption(
+                buildMediaOption(
                   icon: Icons.photo_library,
                   title: 'Gallery',
                   onTap: () {
                     Navigator.pop(context);
-                    _getMultipleMedia(ImageSource.gallery);
+                    getMedia(ImageSource.gallery);
                   },
                 ),
                 const SizedBox(height: 16),
-                _buildMediaOption(
+                buildMediaOption(
                   icon: Icons.camera_alt,
                   title: 'Camera',
                   onTap: () {
                     Navigator.pop(context);
-                    _showCameraOptionsDialog();
+                    showOptions();
                   },
                 ),
               ],
@@ -171,12 +169,12 @@ class _CreateAdViewState extends State<CreateAdView>
     );
   }
 
-  void _showCameraOptionsDialog() {
+  void showOptions() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ScaleTransition(
-          scale: _scaleAnimation,
+          scale: scaleAnimation,
           child: AlertDialog(
             backgroundColor: Colors.grey[900],
             shape:
@@ -188,21 +186,21 @@ class _CreateAdViewState extends State<CreateAdView>
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildMediaOption(
+                buildMediaOption(
                   icon: Icons.photo_camera,
                   title: 'Take Photo',
                   onTap: () {
                     Navigator.pop(context);
-                    _pickMedia(ImageSource.camera, isVideo: false);
+                    pickMedia(ImageSource.camera, isVideo: false);
                   },
                 ),
                 const SizedBox(height: 16),
-                _buildMediaOption(
+                buildMediaOption(
                   icon: Icons.videocam,
                   title: 'Record Video',
                   onTap: () {
                     Navigator.pop(context);
-                    _pickMedia(ImageSource.camera, isVideo: true);
+                    pickMedia(ImageSource.camera, isVideo: true);
                   },
                 ),
               ],
@@ -213,7 +211,7 @@ class _CreateAdViewState extends State<CreateAdView>
     );
   }
 
-  Widget _buildMediaOption({
+  Widget buildMediaOption({
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -247,16 +245,16 @@ class _CreateAdViewState extends State<CreateAdView>
     );
   }
 
-  Widget _buildMediaPreview() {
+  Widget buildMediaPreview() {
     return Container(
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: _mediaFiles.length + 1,
+        itemCount: mediaFiles.length + 1,
         itemBuilder: (context, index) {
-          if (index == _mediaFiles.length) {
+          if (index == mediaFiles.length) {
             return GestureDetector(
-              onTap: _showMediaSourceDialog,
+              onTap: showMedia,
               child: Container(
                 width: 150,
                 margin: const EdgeInsets.all(8),
@@ -285,13 +283,13 @@ class _CreateAdViewState extends State<CreateAdView>
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: _isVideo[index]
+                  child: video[index]
                       ? AspectRatio(
                           aspectRatio:
-                              _videoControllers[index]!.value.aspectRatio,
-                          child: VideoPlayer(_videoControllers[index]!),
+                              videoControllers[index]!.value.aspectRatio,
+                          child: VideoPlayer(videoControllers[index]!),
                         )
-                      : Image.file(_mediaFiles[index], fit: BoxFit.cover),
+                      : Image.file(mediaFiles[index], fit: BoxFit.cover),
                 ),
               ),
               Positioned(
@@ -301,12 +299,12 @@ class _CreateAdViewState extends State<CreateAdView>
                   icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () {
                     setState(() {
-                      if (_isVideo[index]) {
-                        _videoControllers[index]?.dispose();
+                      if (video[index]) {
+                        videoControllers[index]?.dispose();
                       }
-                      _mediaFiles.removeAt(index);
-                      _isVideo.removeAt(index);
-                      _videoControllers.removeAt(index);
+                      mediaFiles.removeAt(index);
+                      video.removeAt(index);
+                      videoControllers.removeAt(index);
                     });
                   },
                 ),
@@ -320,13 +318,13 @@ class _CreateAdViewState extends State<CreateAdView>
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _priceController.dispose();
-    for (final controller in _videoControllers) {
+    nameController.dispose();
+    descriptionController.dispose();
+    priceController.dispose();
+    for (final controller in videoControllers) {
       controller?.dispose();
     }
-    _animationController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
@@ -374,13 +372,13 @@ class _CreateAdViewState extends State<CreateAdView>
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               children: [
-                _buildMediaPreview(),
+                buildMediaPreview(),
                 const SizedBox(height: 24),
-                _buildAnimatedFormField(
-                  controller: _nameController,
+                buildAnimatedForm(
+                  controller: nameController,
                   label: 'Ad Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -390,8 +388,8 @@ class _CreateAdViewState extends State<CreateAdView>
                   },
                 ),
                 const SizedBox(height: 16),
-                _buildAnimatedFormField(
-                  controller: _descriptionController,
+                buildAnimatedForm(
+                  controller: descriptionController,
                   label: 'Description',
                   maxLines: 3,
                   validator: (value) {
@@ -402,8 +400,8 @@ class _CreateAdViewState extends State<CreateAdView>
                   },
                 ),
                 const SizedBox(height: 16),
-                _buildAnimatedFormField(
-                  controller: _priceController,
+                buildAnimatedForm(
+                  controller: priceController,
                   label: 'Price',
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -418,10 +416,10 @@ class _CreateAdViewState extends State<CreateAdView>
                 ),
                 const SizedBox(height: 24),
                 AnimatedBuilder(
-                  animation: _animationController,
+                  animation: animationController,
                   builder: (context, child) {
                     return Transform.scale(
-                      scale: _scaleAnimation.value,
+                      scale: scaleAnimation.value,
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -452,7 +450,7 @@ class _CreateAdViewState extends State<CreateAdView>
                             ),
                           ),
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
+                            if (formKey.currentState!.validate()) {
                               final adViewModel = Provider.of<AdViewModel>(
                                   context,
                                   listen: false);
@@ -460,13 +458,13 @@ class _CreateAdViewState extends State<CreateAdView>
                                 id: DateTime.now()
                                     .millisecondsSinceEpoch
                                     .toString(),
-                                name: _nameController.text,
-                                details: _descriptionController.text,
-                                description: _descriptionController
+                                name: nameController.text,
+                                details: descriptionController.text,
+                                description: descriptionController
                                     .text, // Added missing description parameter
-                                price: double.parse(_priceController.text),
+                                price: double.parse(priceController.text),
                                 imageUrl:
-                                    _mediaFiles // Changed 'images' to 'imageUrl' to match the Ad model
+                                    mediaFiles // Changed 'images' to 'imageUrl' to match the Ad model
                                         .map((file) => file.path)
                                         .toList(),
                                 createdAt: DateTime.now(),
@@ -501,7 +499,7 @@ class _CreateAdViewState extends State<CreateAdView>
     );
   }
 
-  Widget _buildAnimatedFormField({
+  Widget buildAnimatedForm({
     required TextEditingController controller,
     required String label,
     int? maxLines,
@@ -509,10 +507,10 @@ class _CreateAdViewState extends State<CreateAdView>
     String? Function(String?)? validator,
   }) {
     return AnimatedBuilder(
-      animation: _animationController,
+      animation: animationController,
       builder: (context, child) {
         return Transform.scale(
-          scale: _scaleAnimation.value,
+          scale: scaleAnimation.value,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),

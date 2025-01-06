@@ -8,41 +8,41 @@ class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
 
   @override
-  _RegisterViewState createState() => _RegisterViewState();
+  registerViewS createState() => registerViewS();
 }
 
-class _RegisterViewState extends State<RegisterView>
+class registerViewS extends State<RegisterView>
     with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+  final formKey = GlobalKey<FormState>();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final phoneController = TextEditingController();
+  final emailController = TextEditingController();
+  late AnimationController animationController;
+  late Animation<double> fadeAnimation;
   bool visiblePassword = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
+    fadeAnimation = CurvedAnimation(
+      parent: animationController,
       curve: Curves.easeIn,
     );
-    _animationController.forward();
+    animationController.forward();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _animationController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
@@ -63,9 +63,9 @@ class _RegisterViewState extends State<RegisterView>
             child: Center(
               child: SingleChildScrollView(
                 child: FadeTransition(
-                  opacity: _fadeAnimation,
+                  opacity: fadeAnimation,
                   child: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -79,7 +79,7 @@ class _RegisterViewState extends State<RegisterView>
                         ),
                         const SizedBox(height: 32),
                         TextFormField(
-                          controller: _usernameController,
+                          controller: usernameController,
                           decoration: InputDecoration(
                             labelText: 'Username',
                             filled: true,
@@ -97,7 +97,7 @@ class _RegisterViewState extends State<RegisterView>
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
-                          controller: _passwordController,
+                          controller: passwordController,
                           obscureText: !visiblePassword,
                           decoration: InputDecoration(
                             labelText: 'Password',
@@ -126,7 +126,7 @@ class _RegisterViewState extends State<RegisterView>
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
-                          controller: _emailController,
+                          controller: emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
                             filled: true,
@@ -149,7 +149,7 @@ class _RegisterViewState extends State<RegisterView>
                         const SizedBox(height: 16),
                         TextFormField(
                           controller:
-                              _phoneController, // Make sure to define this controller
+                              phoneController, // Make sure to define this controller
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
                             filled: true,
@@ -174,38 +174,31 @@ class _RegisterViewState extends State<RegisterView>
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
+                            if (formKey.currentState!.validate()) {
                               final authViewModel = Provider.of<AuthViewModel>(
                                   context,
                                   listen: false);
 
-                              // Attempt to register the user using the AuthViewModel
                               final success = await authViewModel.register(
-                                  _usernameController.text,
-                                  _passwordController.text,
-                                  _emailController.text,
-                                  _phoneController.text);
+                                  usernameController.text,
+                                  passwordController.text,
+                                  emailController.text,
+                                  phoneController.text);
 
                               if (success && mounted) {
-                                // Simulate a registration HTTP request
                                 HttpRequest.post({
-                                  "endPoint":
-                                      "/user/signup", // API endpoint for user registration
-                                  "password": _passwordController.text,
-                                  "username": _usernameController.text,
-                                  "email": _emailController.text,
-                                  "details":
-                                      "NOT IMPLEMENTED", // Placeholder for additional details
-                                  "confirmPassword": _passwordController
-                                      .text // Credit card information
+                                  "endPoint": "/user/signup",
+                                  "password": passwordController.text,
+                                  "username": usernameController.text,
+                                  "email": emailController.text,
+                                  "details": "NOT IMPLEMENTED",
+                                  "confirmPassword": passwordController.text
                                 }).then((res) {
-                                  // Check the response status code
                                   if (res.statusCode == 200) {
-                                    // On success, navigate to OTP verification page
                                     try {
                                       AutoLogin.saveData(
-                                          _usernameController.text,
-                                          _passwordController.text);
+                                          usernameController.text,
+                                          passwordController.text);
                                     } catch (e) {
                                       print("error" + e.toString());
                                     }
@@ -214,7 +207,6 @@ class _RegisterViewState extends State<RegisterView>
                                   }
                                 });
                               } else {
-                                // Show error message if registration failed
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(

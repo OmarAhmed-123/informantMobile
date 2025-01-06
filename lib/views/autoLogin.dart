@@ -7,28 +7,21 @@ import 'package:local_auth/local_auth.dart';
 class AutoLogin extends StatelessWidget {
   const AutoLogin({Key? key}) : super(key: key);
 
-  // Instantiate LocalAuthentication in a method
   LocalAuthentication get auth => LocalAuthentication();
 
-  // Fetch user credentials from SharedPreferences
   Future<bool> getData() async {
     try {
       SharedPreferences objShared = await SharedPreferences.getInstance();
       final username = objShared.getString('username');
       final password = objShared.getString('password');
 
-      // Debugging logs for FlutLab console
-      debugPrint("Retrieved username: $username, password: $password");
-
-      // Return true if both username and password are available
       return username != null && password != null;
     } catch (e) {
-      debugPrint("Error retrieving data from SharedPreferences: $e");
+      debugPrint("Error from SharedPreferences: $e");
       return false;
     }
   }
 
-  // Biometric Authentication Logic
   Future<bool> Authenticate() async {
     try {
       final bool authBio = await auth.canCheckBiometrics;
@@ -63,10 +56,6 @@ class AutoLogin extends StatelessWidget {
     return FutureBuilder<bool>(
       future: getData(),
       builder: (context, snapshot) {
-        debugPrint(
-            "FutureBuilder Connection State: ${snapshot.connectionState}");
-
-        // Handle loading state
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(
@@ -75,7 +64,6 @@ class AutoLogin extends StatelessWidget {
           );
         }
 
-        // Handle errors
         if (snapshot.hasError) {
           return Scaffold(
             body: Center(
@@ -87,10 +75,8 @@ class AutoLogin extends StatelessWidget {
           );
         }
 
-        // Handle successful completion
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data == true) {
-            // Authenticate user before navigating to home
             return FutureBuilder<bool>(
               future: Authenticate(),
               builder: (context, authSnapshot) {
@@ -104,57 +90,133 @@ class AutoLogin extends StatelessWidget {
 
                 if (authSnapshot.connectionState == ConnectionState.done &&
                     authSnapshot.data == true) {
-                  return const HomeView(); // Go to home if authentication succeeds
+                  return const HomeView();
                 } else {
                   return Scaffold(
-                    body: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Informant \n\n\n Verification Needed',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  18, // Slightly larger size for the title
-                            ),
+                    body: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 80), // Space at the top
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Image
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/informant.jpeg'), // Your image path
+                                    fit: BoxFit.cover,
+                                  ),
+                                  shape: BoxShape.circle, // Circular background
+                                ),
+                              ),
+                              const SizedBox(
+                                  width: 10), // Space between image and text
+                              // Text
+                              const Text(
+                                'Informant',
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'We were unable to verify your face ID, fingerprint, or pattern.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 16,
-                            ),
+                        ),
+                        const SizedBox(height: 40),
+                        const Spacer(),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Icons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.face,
+                                    size: 80,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Icon(
+                                    Icons.fingerprint,
+                                    size: 80,
+                                    color: Colors.red,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              // Title
+                              const Text(
+                                'Verification needed',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              // Description
+                              const Text(
+                                'We were unable to verify your Face ID or Fingerprint.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
+                        ),
+                        const Spacer(),
+
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 55),
+                          child: ElevatedButton(
                             onPressed: () {
-                              // Navigate back to AutoLogin screen
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const AutoLogin()),
                               );
                             },
-                            child: const Text('Try Again'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 40, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(8), // Rounded corners
+                              ),
+                            ),
+                            child: const Text(
+                              'Try Again',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 }
               },
             );
           } else {
-            return const LoginView(); // Go to login if credentials are missing
+            return const LoginView();
           }
         }
 
-        // Fallback widget
         return const Scaffold(
           body: Center(
             child: Text('Unexpected state'),

@@ -8,17 +8,17 @@ import '../view_models/auth_view_model.dart';
 class OtpVerificationView extends StatefulWidget {
   const OtpVerificationView({Key? key}) : super(key: key);
   @override
-  _OtpVerificationViewState createState() => _OtpVerificationViewState();
+  otpVerificationViewS createState() => otpVerificationViewS();
 }
 
-class _OtpVerificationViewState extends State<OtpVerificationView> {
-  final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _otpControllers =
+class otpVerificationViewS extends State<OtpVerificationView> {
+  final formKey = GlobalKey<FormState>();
+  final List<TextEditingController> otpControllers =
       List.generate(9, (_) => TextEditingController());
 
   @override
   void dispose() {
-    for (var controller in _otpControllers) {
+    for (var controller in otpControllers) {
       controller.dispose();
     }
     super.dispose();
@@ -50,7 +50,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -67,7 +67,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     (index) => SizedBox(
                       width: 40,
                       child: TextFormField(
-                        controller: _otpControllers[index],
+                        controller: otpControllers[index],
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.7),
@@ -105,8 +105,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      String otp = _otpControllers
+                    if (formKey.currentState!.validate()) {
+                      String otp = otpControllers
                           .map((controller) => controller.text)
                           .join();
                       var response = HttpRequest.post({

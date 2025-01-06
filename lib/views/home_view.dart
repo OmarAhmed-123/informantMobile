@@ -17,7 +17,7 @@ class homeView extends State<HomeView> {
   late Timer autoScroll;
   int currentIndexInV = 0;
 
-  bool _showSearch = false;
+  bool showSearch = false;
   final List<Map<String, dynamic>> ads = [
     {
       "name": "Ad name",
@@ -154,7 +154,7 @@ class homeView extends State<HomeView> {
       ],
       "availablePlaces": 10,
       "creatorName": "COMPANY NAME"
-    } // Add more ad entries here.
+    }
   ];
 
   @override
@@ -202,12 +202,10 @@ class homeView extends State<HomeView> {
           final currentScroll = scrollHorizontal.offset;
 
           if (currentScroll >= maxScroll) {
-            // Reset to the beginning when reaching the end
             scrollHorizontal.jumpTo(0);
           } else {
-            // Scroll right smoothly
             scrollHorizontal.animateTo(
-              currentScroll + 330, // Adjust the scroll amount as needed
+              currentScroll + 330,
               duration: const Duration(milliseconds: 900),
               curve: Curves.easeInOut,
             );
@@ -220,7 +218,6 @@ class homeView extends State<HomeView> {
       autoScroll?.cancel();
     }
 
-    // Start the auto-scroll timer when the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       startOfAutoScroll();
     });
@@ -233,7 +230,7 @@ class homeView extends State<HomeView> {
     }
 
     return SizedBox(
-      height: 420, // Adjust height to fit horizontal layout
+      height: 420,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: scrollHorizontal,
@@ -243,19 +240,19 @@ class homeView extends State<HomeView> {
           final ad = ads[index];
           return GestureDetector(
             onTapDown: (_) {
-              isScrollD = true; // Stop auto-scrolling
+              isScrollD = true;
             },
             onTapUp: (_) {
-              isScrollD = false; // Resume auto-scrolling
+              isScrollD = false;
             },
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
-              opacity: 1.0, // Full opacity for all items
+              opacity: 1.0,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
                 child: Container(
-                  width: 320, // Fixed width for horizontal items
+                  width: 320,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     gradient: LinearGradient(
@@ -280,7 +277,7 @@ class homeView extends State<HomeView> {
                         child: Image.network(
                           ad['images'][0],
                           fit: BoxFit.cover,
-                          height: 150, // Adjust height for horizontal layout
+                          height: 150,
                           width: double.infinity,
                         ),
                       ),
@@ -331,14 +328,14 @@ class homeView extends State<HomeView> {
 
   Widget verticalList() {
     return SizedBox(
-      height: 400, // Adjust height to fit the desired grid size
+      height: 400,
       child: GridView.builder(
-        scrollDirection: Axis.vertical, // Allow vertical scrolling
+        scrollDirection: Axis.vertical,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Three items per row
-          crossAxisSpacing: 10, // Space between items in a row
-          mainAxisSpacing: 20, // Space between rows
-          childAspectRatio: 1, // Keep items square
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 20,
+          childAspectRatio: 1,
         ),
         itemCount: ads.length,
         itemBuilder: (context, index) {
@@ -388,7 +385,7 @@ class homeView extends State<HomeView> {
             icon: const Icon(Icons.search, color: Colors.white, size: 30.0),
             onPressed: () {
               setState(() {
-                _showSearch = true;
+                showSearch = true;
               });
               tooltip:
               'Search';

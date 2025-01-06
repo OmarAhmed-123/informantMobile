@@ -1,23 +1,22 @@
-// ignore_for_file: use_super_parameters, library_private_types_in_public_api, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 
 class EmailVerificationView extends StatefulWidget {
   const EmailVerificationView({Key? key}) : super(key: key);
 
   @override
-  _EmailVerificationViewState createState() => _EmailVerificationViewState();
+  emailVerificationViewS createState() => emailVerificationViewS();
 }
 
-class _EmailVerificationViewState extends State<EmailVerificationView> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+class emailVerificationViewS extends State<EmailVerificationView> {
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
 
   @override
   void dispose() {
-    _emailController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
@@ -38,12 +37,12 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  controller: _emailController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     filled: true,
@@ -56,14 +55,14 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    // Add email format validation here
                     return null;
                   },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.purple[700], backgroundColor: Colors.white,
+                    foregroundColor: Colors.purple[700],
+                    backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
@@ -71,11 +70,11 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
                     ),
                   ),
                   onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                       final authViewModel =
                           Provider.of<AuthViewModel>(context, listen: false);
                       bool isRegistered = await authViewModel
-                          .checkEmailRegistration(_emailController.text);
+                          .checkEmailRegistration(emailController.text);
                       if (isRegistered) {
                         Navigator.pushNamed(context, '/otp_verification');
                       } else {
@@ -85,6 +84,18 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
                                   'Email is not registered. Please sign up.')),
                         );
                       }
+                      HttpRequest.post(
+                        {
+                          "endPoint": "/user/forgot",
+                          "email": emailController.text,
+                        },
+                      ).then((res) {
+                        if (res.statusCode == 200) {
+                          Navigator.pushNamed(context, '/otp_verification');
+                        }
+                      }).catchError((error) {
+                        print("Error: $error");
+                      });
                     }
                   },
                   child: const Text('Send Verification Code'),

@@ -11,50 +11,49 @@ class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
-  _LoginViewState createState() => _LoginViewState();
+  loginViewSt createState() => loginViewSt();
 }
 
-class _LoginViewState extends State<LoginView>
-    with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  late AnimationController animationController;
+  late Animation<double> fadeAnimation;
   bool visiblePassword2 = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
-    _animationController.forward();
+    fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(animationController);
+    animationController.forward();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    animationController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
   Future<void> loginFun() async {
-    if (_formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
       // For now, just show a success message
       HttpRequest.post({
         "endPoint": "/user/login",
-        "username": _emailController.text,
-        "password": _passwordController.text
+        "username": emailController.text,
+        "password": passwordController.text
       }).then((res) => {
             if (res.statusCode == 200)
               {
                 AutoLogin.saveData(
-                    _emailController.text, _passwordController.text),
+                    emailController.text, passwordController.text),
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Login successful!')),
                 ),
@@ -67,12 +66,11 @@ class _LoginViewState extends State<LoginView>
                     content: Text('Error: Status Code ${res.statusCode}')))
               }
           });
-      // Navigate to the HomeView for demo purposes
     }
   }
 
   Future<void> loginWithoutBE() async {
-    AutoLogin.saveData(_emailController.text, _passwordController.text);
+    AutoLogin.saveData(emailController.text, passwordController.text);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const HomeView()));
   }
@@ -81,7 +79,7 @@ class _LoginViewState extends State<LoginView>
   Widget build(BuildContext context) {
     return Scaffold(
       body: FadeTransition(
-        opacity: _fadeAnimation,
+        opacity: fadeAnimation,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -94,7 +92,7 @@ class _LoginViewState extends State<LoginView>
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -113,7 +111,7 @@ class _LoginViewState extends State<LoginView>
                     ),
                     const SizedBox(height: 32),
                     TextFormField(
-                      controller: _emailController,
+                      controller: emailController,
                       decoration: InputDecoration(
                         hintText: 'Enter your username',
                         filled: true,
@@ -130,8 +128,8 @@ class _LoginViewState extends State<LoginView>
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
-                      controller: _passwordController,
-                      obscureText: !visiblePassword2, // Toggle visibility
+                      controller: passwordController,
+                      obscureText: !visiblePassword2,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         filled: true,
@@ -147,8 +145,7 @@ class _LoginViewState extends State<LoginView>
                           ),
                           onPressed: () {
                             setState(() {
-                              visiblePassword2 =
-                                  !visiblePassword2; // Toggle the state
+                              visiblePassword2 = !visiblePassword2;
                             });
                           },
                         ),

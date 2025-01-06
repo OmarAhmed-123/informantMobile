@@ -119,7 +119,6 @@ class CollectDataState extends State<collectData> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -144,139 +143,166 @@ class CollectDataState extends State<collectData> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: ListView(
-            children: [
-              GestureDetector(
-                onTap: () => showImage(context),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: selectedImage != null
-                      ? FileImage(selectedImage!)
-                      : const AssetImage('assets/default_avatar.png')
-                          as ImageProvider,
-                  child: selectedImage == null
-                      ? const Icon(Icons.camera_alt,
-                          size: 50, color: Colors.grey)
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black,
+              Colors.blue.shade900.withOpacity(0.6),
+              Colors.black,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: formKey,
+            child: ListView(
+              children: [
+                GestureDetector(
+                  onTap: () => showImage(context),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: selectedImage != null
+                        ? FileImage(selectedImage!)
+                        : const AssetImage('assets/default_avatar.png')
+                            as ImageProvider,
+                    child: selectedImage == null
+                        ? const Icon(Icons.camera_alt,
+                            size: 50, color: Colors.grey)
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: linkedInController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  decoration: InputDecoration(
+                    labelText: "LinkedIn URL (required)",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty)
+                      return "LinkedIn URL is required";
+                    if (!isCorrectLink(value))
+                      return "Enter a valid LinkedIn URL";
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: experienceController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Years of Experience (required)",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Years of experience is required";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Enter a valid number";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: phoneController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    labelText: "Phone Number (optional)",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: emailController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: "Email (optional)",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: profileLinkController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  decoration: InputDecoration(
+                    labelText: "Profile Link (optional)",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: aboutController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    labelText: "About You",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) => value == null || value.isEmpty
+                      ? "Please provide details"
                       : null,
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: linkedInController,
-                decoration: InputDecoration(
-                  labelText: "LinkedIn URL (required)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: skillsController,
+                  style: TextStyle(color: Color(0xff47cb42)),
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    labelText: "Your Skills",
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (value) => value == null || value.isEmpty
+                      ? "Please list your skills"
+                      : null,
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    "Save Profile",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return "LinkedIn URL is required";
-                  if (!isCorrectLink(value))
-                    return "Enter a valid LinkedIn URL";
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: experienceController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Years of Experience (required)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Years of experience is required";
-                  }
-                  if (int.tryParse(value) == null) {
-                    return "Enter a valid number";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: "Phone Number (optional)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: "Email (optional)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: profileLinkController,
-                decoration: InputDecoration(
-                  labelText: "Profile Link (optional)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: aboutController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: "About You",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) => value == null || value.isEmpty
-                    ? "Please provide details"
-                    : null,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: skillsController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: "Your Skills",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) => value == null || value.isEmpty
-                    ? "Please list your skills"
-                    : null,
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: saveProfile,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  backgroundColor: Colors.blue,
-                ),
-                child: const Text(
-                  "Save Profile",
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

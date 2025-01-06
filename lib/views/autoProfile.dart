@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:graduation___part1/views/collectData.dart';
 import 'package:graduation___part1/views/profile.dart';
 
-class autoProfile extends StatelessWidget {
-  const autoProfile({Key? key}) : super(key: key);
+class AutoProfile extends StatelessWidget {
+  const AutoProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class CheckUserStatus extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Navigate based on data availability
         if (snapshot.data == true) {
           return const ProfilePage();
         } else {

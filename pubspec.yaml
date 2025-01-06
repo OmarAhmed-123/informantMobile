@@ -20,6 +20,9 @@ dependencies:
   local_auth: ^2.1.8
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.3.3
+  no_screenshot: ^0.3.1
+  connectivity_plus: ^6.1.1
+  url_launcher: ^6.3.1
 
 flutter:
   uses-material-design: true
@@ -29,4 +32,4 @@ flutter:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0

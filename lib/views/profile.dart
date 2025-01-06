@@ -8,14 +8,14 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  profilePageS createState() => profilePageS();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class profilePageS extends State<ProfilePage> {
   String? about;
   String? username;
   String? skills;
-  ImageProvider? _profileImage;
+  ImageProvider? profileImage;
   int selectedTab = 0;
   String? linkedin;
   int? numOfEx;
@@ -25,10 +25,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _loadProfileData();
+    getProfileData();
   }
 
-  Future<void> _loadProfileData() async {
+  Future<void> getProfileData() async {
     SharedPreferences objShared = await SharedPreferences.getInstance();
 
     setState(() {
@@ -45,9 +45,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (base64Image != null) {
         final bytes = base64Decode(base64Image);
-        _profileImage = MemoryImage(bytes);
+        profileImage = MemoryImage(bytes);
       } else {
-        _profileImage = const AssetImage('assets/default_avatar.png');
+        profileImage = const AssetImage('assets/default_avatar.png');
       }
     });
   }
@@ -212,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Color(0xff3d3d3d),
+        backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.home, color: Colors.white),
@@ -235,98 +235,111 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black,
+              Colors.blue.shade900.withOpacity(0.6),
+              Colors.black,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey[800],
+                    backgroundImage: profileImage,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  username ?? "Username",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.message),
+                  label: const Text("Contact Me"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.person, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 0;
+                            });
+                          },
+                        ),
+                        const Text("Profile",
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.star, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 1;
+                            });
+                          },
+                        ),
+                        const Text("Rates",
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.work, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 2;
+                            });
+                          },
+                        ),
+                        const Text("My Works",
+                            style: TextStyle(color: Colors.white)),
+                      ],
                     ),
                   ],
                 ),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.grey[800],
-                  backgroundImage: _profileImage,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                username ?? "Username",
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.message),
-                label: const Text("Contact Me"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.person, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 0;
-                          });
-                        },
-                      ),
-                      const Text("Profile",
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.star, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 1;
-                          });
-                        },
-                      ),
-                      const Text("Rates",
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.work, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 2;
-                          });
-                        },
-                      ),
-                      const Text("My Works",
-                          style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ],
-              ),
-              Divider(height: 40, thickness: 1, color: Colors.grey[600]),
-              _buildContent(),
-            ],
+                Divider(height: 40, thickness: 1, color: Colors.grey[600]),
+                _buildContent(),
+              ],
+            ),
           ),
         ),
       ),

@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/home_view.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
-import 'package:graduation___part1/views/ad_list_view.dart'
-    as adView; // Added 'as' to prefix ad_list_view
+import 'package:graduation___part1/views/ad_list_view.dart' as adView;
 import 'package:graduation___part1/views/create_ad_view.dart';
 import 'package:graduation___part1/views/Statistics.dart';
 import 'package:graduation___part1/views/autoProfile.dart';
@@ -23,7 +22,7 @@ class HomeView1 extends StatelessWidget {
     final authViewModel = Provider.of<AuthViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple[700],
+        backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.person, color: Colors.white),
           onPressed: () {
@@ -50,14 +49,18 @@ class HomeView1 extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.purple[700]!, Colors.blue[500]!],
+            colors: [
+              Colors.black,
+              Colors.blue.shade900.withOpacity(0.6),
+              Colors.black,
+            ],
           ),
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildActionCard(
+              buildActionCard(
                 context,
                 'Get Ads',
                 'Choose an item for your ad',
@@ -66,13 +69,12 @@ class HomeView1 extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const adView
-                            .AdListView()), // Using the prefixed AdListView
+                        builder: (_) => const adView.AdListView()),
                   );
                 },
               ),
               const SizedBox(height: 20),
-              _buildActionCard(
+              buildActionCard(
                 context,
                 'Create Ad',
                 'Create your own ad',
@@ -85,7 +87,7 @@ class HomeView1 extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-              _buildActionCard(
+              buildActionCard(
                 context,
                 'My profile',
                 '',
@@ -93,12 +95,12 @@ class HomeView1 extends StatelessWidget {
                 () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const autoProfile()),
+                    MaterialPageRoute(builder: (_) => const AutoProfile()),
                   );
                 },
               ),
               const SizedBox(height: 20),
-              _buildActionCard(
+              buildActionCard(
                 context,
                 'Statistics',
                 'View your ad performance',
@@ -111,7 +113,7 @@ class HomeView1 extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-              _buildActionCard(
+              buildActionCard(
                 context,
                 'Log Out',
                 '',
@@ -155,7 +157,6 @@ class HomeView1 extends StatelessWidget {
   }
 
   void logOut2(BuildContext context) {
-    // Add your logout logic here
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('You have been logged out.')),
     );
@@ -167,7 +168,7 @@ class HomeView1 extends StatelessWidget {
         ));
   }
 
-  Widget _buildActionCard(BuildContext context, String title, String subtitle,
+  Widget buildActionCard(BuildContext context, String title, String subtitle,
       IconData icon, VoidCallback onTap) {
     return Card(
       elevation: 4,

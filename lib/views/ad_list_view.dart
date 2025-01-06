@@ -12,10 +12,10 @@ class AdListView extends StatefulWidget {
   const AdListView({Key? key}) : super(key: key);
 
   @override
-  _AdListViewState createState() => _AdListViewState();
+  AdListViewS createState() => AdListViewS();
 }
 
-class _AdListViewState extends State<AdListView> {
+class AdListViewS extends State<AdListView> {
   @override
   void initState() {
     super.initState();
@@ -89,10 +89,10 @@ class AdListView extends StatefulWidget {
   const AdListView({Key? key}) : super(key: key);
 
   @override
-  _AdListViewState createState() => _AdListViewState();
+  AdListViewS createState() => AdListViewS();
 }
 
-class _AdListViewState extends State<AdListView> {
+class AdListViewS extends State<AdListView> {
   @override
   void initState() {
     super.initState();
@@ -300,16 +300,16 @@ class AdListView extends StatefulWidget {
   const AdListView({Key? key}) : super(key: key);
 
   @override
-  _AdListViewState createState() => _AdListViewState();
+  AdListViewS createState() => AdListViewS();
 }
 
-class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
+  late AnimationController fadeController;
+  late AnimationController slideController;
+  late Animation<double> fadeAnimation;
+  late Animation<Offset> slideAnimation;
   final CarouselController _carouselController = CarouselController();
-  int _currentImageIndex = 0;
+  int currentImageIndex = 0;
 
   final List<Map<String, dynamic>> ads = [
     {
@@ -453,52 +453,52 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _initializeAnimations();
+    initiAnimations();
   }
 
-  void _initializeAnimations() {
-    _fadeController = AnimationController(
+  void initiAnimations() {
+    fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
-    _slideController = AnimationController(
+    slideController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
+    fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _fadeController,
+      parent: fadeController,
       curve: Curves.easeInOut,
     ));
 
-    _slideAnimation = Tween<Offset>(
+    slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
     ).animate(CurvedAnimation(
-      parent: _slideController,
+      parent: slideController,
       curve: Curves.elasticOut,
     ));
 
-    _fadeController.forward();
-    _slideController.forward();
+    fadeController.forward();
+    slideController.forward();
   }
 
   @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
+    fadeController.dispose();
+    slideController.dispose();
     super.dispose();
   }
 
-  Widget _buildAdCard(Map<String, dynamic> ad, int index) {
+  Widget buildAdCard(Map<String, dynamic> ad, int index) {
     return SlideTransition(
-      position: _slideAnimation,
+      position: slideAnimation,
       child: FadeTransition(
-        opacity: _fadeAnimation,
+        opacity: fadeAnimation,
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
@@ -537,7 +537,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
                         autoPlayInterval: const Duration(seconds: 3),
                         onPageChanged: (index, reason) {
                           setState(() {
-                            _currentImageIndex = index;
+                            currentImageIndex = index;
                           });
                         },
                       ),
@@ -741,7 +741,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: ads.length,
-          itemBuilder: (context, index) => _buildAdCard(ads[index], index),
+          itemBuilder: (context, index) => buildAdCard(ads[index], index),
         ),
       ),
     );
@@ -753,20 +753,22 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../models/ad.dart';
 import 'ad_detail_view.dart';
+import 'package:graduation___part1/views/home_view.dart';
+import 'package:graduation___part1/views/barOfHome.dart';
 
 class AdListView extends StatefulWidget {
   const AdListView({Key? key}) : super(key: key);
 
   @override
-  _AdListViewState createState() => _AdListViewState();
+  AdListViewS createState() => AdListViewS();
 }
 
-class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
-  int _currentImageIndex = 0;
+class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
+  late AnimationController fadeController;
+  late AnimationController slideController;
+  late Animation<double> fadeAnimation;
+  late Animation<Offset> slideAnimation;
+  int currentImageIndex = 0;
 
   final List<Map<String, dynamic>> ads = [
     {
@@ -910,52 +912,52 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _initializeAnimations();
+    initiAnimations();
   }
 
-  void _initializeAnimations() {
-    _fadeController = AnimationController(
+  void initiAnimations() {
+    fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
-    _slideController = AnimationController(
+    slideController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
+    fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _fadeController,
+      parent: fadeController,
       curve: Curves.easeInOut,
     ));
 
-    _slideAnimation = Tween<Offset>(
+    slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
     ).animate(CurvedAnimation(
-      parent: _slideController,
+      parent: slideController,
       curve: Curves.elasticOut,
     ));
 
-    _fadeController.forward();
-    _slideController.forward();
+    fadeController.forward();
+    slideController.forward();
   }
 
   @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
+    fadeController.dispose();
+    slideController.dispose();
     super.dispose();
   }
 
-  Widget _buildAdCard(Map<String, dynamic> ad, int index) {
+  Widget buildAdCard(Map<String, dynamic> ad, int index) {
     return SlideTransition(
-      position: _slideAnimation,
+      position: slideAnimation,
       child: FadeTransition(
-        opacity: _fadeAnimation,
+        opacity: fadeAnimation,
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
@@ -993,7 +995,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
                         autoPlayInterval: const Duration(seconds: 3),
                         onPageChanged: (index, reason) {
                           setState(() {
-                            _currentImageIndex = index;
+                            currentImageIndex = index;
                           });
                         },
                       ),
@@ -1170,15 +1172,28 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text(
-          'Available Ads',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.home, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeView()),
+            );
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeView1()),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -1196,7 +1211,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: ads.length,
-          itemBuilder: (context, index) => _buildAdCard(ads[index], index),
+          itemBuilder: (context, index) => buildAdCard(ads[index], index),
         ),
       ),
     );
