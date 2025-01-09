@@ -4,8 +4,9 @@ import 'package:graduation___part1/views/httpCodeG.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
-
+import '../view_models/auth_view_model.dart';
 import 'email_verification_view.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -17,6 +18,7 @@ class LoginView extends StatefulWidget {
 class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
+  //final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   late AnimationController animationController;
   late Animation<double> fadeAnimation;
@@ -39,26 +41,44 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
     animationController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    //usernameController.dispose();
     super.dispose();
   }
 
   Future<void> loginFun() async {
     if (formKey.currentState!.validate()) {
-      // For now, just show a success message
+      final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
       HttpRequest.post({
         "endPoint": "/user/login",
         "username": emailController.text,
-        "password": passwordController.text
+        "password": passwordController.text,
+        //"userName": usernameController.text,
       }).then((res) => {
             if (res.statusCode == 200)
               {
-                AutoLogin.saveData(
-                    emailController.text, passwordController.text),
+                if ((emailController.text).contains('@'))
+                  {
+                    AutoLogin.saveData(
+                        "", passwordController.text, emailController.text)
+                  }
+                else
+                  {
+                    AutoLogin.saveData(
+                        emailController.text, passwordController.text, "")
+                  },
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Login successful!')),
                 ),
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => const HomeView()))
+              }
+            else if (res.statusCode == 204)
+              {
+                //authViewModel.username = usernameController.text,
+                authViewModel.password = passwordController.text,
+                authViewModel.email = emailController.text,
+                authViewModel.flag = 2,
+                Navigator.pushReplacementNamed(context, '/email_verification'),
               }
             else
               {
@@ -70,7 +90,9 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
   }
 
   Future<void> loginWithoutBE() async {
-    AutoLogin.saveData(emailController.text, passwordController.text);
+    AutoLogin.saveData(emailController.text, passwordController.text, "");
+    AutoLogin.saveData("", passwordController.text, emailController.text);
+
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const HomeView()));
   }
@@ -159,9 +181,8 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed:
-                          //loginFun,
-                          loginWithoutBE, //for omar
+                      onPressed: loginFun,
+                      //loginWithoutBE, //for omar to change between the connection
                       child: const Text('Sign In'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -172,6 +193,9 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
+                        final authViewModel =
+                            Provider.of<AuthViewModel>(context, listen: false);
+                        authViewModel.flag = 1;
                         Navigator.push(
                           context,
                           MaterialPageRoute(

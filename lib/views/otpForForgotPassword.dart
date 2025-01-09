@@ -1,6 +1,7 @@
+// ignore_for_file: file_names, unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
-import 'package:graduation___part1/views/forgot_password_view.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -111,7 +112,7 @@ class otpVerificationViewS extends State<OtpForForgotPassword> {
                       var response = HttpRequest.post({
                         "endPoint": "/user/verify",
                         "otp": otp,
-                        "email": "${authViewModel.email}"
+                        "email": authViewModel.email
                       }).then((res) {
                         if (res.statusCode == 200) {
                           print('Entered OTP: $otp');

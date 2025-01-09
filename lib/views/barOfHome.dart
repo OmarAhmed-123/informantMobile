@@ -89,7 +89,7 @@ class HomeView1 extends StatelessWidget {
               const SizedBox(height: 20),
               buildActionCard(
                 context,
-                'My profile',
+                'My Profile',
                 '',
                 Icons.person,
                 () {

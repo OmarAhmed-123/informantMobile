@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
+import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -106,6 +107,11 @@ class otpVerificationViewS extends State<OtpVerificationView> {
                   ),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
+                      final authViewModel =
+                          Provider.of<AuthViewModel>(context, listen: false);
+                      String name = authViewModel.username!;
+                      String pass = authViewModel.password!;
+                      String email = authViewModel.email!;
                       String otp = otpControllers
                           .map((controller) => controller.text)
                           .join();
@@ -116,6 +122,7 @@ class otpVerificationViewS extends State<OtpVerificationView> {
                       }).then((res) {
                         if (res.statusCode == 200) {
                           print('Entered OTP: $otp');
+                          AutoLogin.saveData(name, pass, email);
                           Navigator.pushReplacementNamed(context, '/home');
                         }
                       });

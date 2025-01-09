@@ -149,7 +149,7 @@ class CreateAdViewS extends State<CreateAdView>
                   title: 'Gallery',
                   onTap: () {
                     Navigator.pop(context);
-                    getMedia(ImageSource.gallery);
+                    showOptions2();
                   },
                 ),
                 const SizedBox(height: 16),
@@ -169,6 +169,89 @@ class CreateAdViewS extends State<CreateAdView>
     );
   }
 
+void showOptions2() {
+
+    showDialog(
+
+      context: context,
+
+      builder: (BuildContext context) {
+
+        return ScaleTransition(
+
+          scale: scaleAnimation,
+
+          child: AlertDialog(
+
+            backgroundColor: Colors.grey[900],
+
+            shape:
+
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+
+            title: const Text(
+
+              'Choose Camera Mode',
+
+              style: TextStyle(color: Colors.white),
+
+            ),
+
+            content: Column(
+
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+
+                buildMediaOption(
+
+                  icon: Icons.photo_camera,
+
+                  title: 'Photo Gallery',
+
+                  onTap: () {
+
+                    Navigator.pop(context);
+
+                    getMedia(ImageSource.gallery);
+
+                  },
+
+                ),
+
+                const SizedBox(height: 16),
+
+                buildMediaOption(
+
+                  icon: Icons.videocam,
+
+                  title: 'Video Gallery',
+
+                  onTap: () {
+
+                    Navigator.pop(context);
+
+                    getMedia(ImageSource.gallery, isVideo: true);
+
+                  },
+
+                ),
+
+              ],
+
+            ),
+
+          ),
+
+        );
+
+      },
+
+    );
+
+  }    
+    
+    
   void showOptions() {
     showDialog(
       context: context,

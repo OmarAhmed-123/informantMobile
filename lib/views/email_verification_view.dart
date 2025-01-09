@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
 
 class EmailVerificationView extends StatefulWidget {
   const EmailVerificationView({Key? key}) : super(key: key);
@@ -73,17 +73,7 @@ class emailVerificationViewS extends State<EmailVerificationView> {
                     if (formKey.currentState!.validate()) {
                       final authViewModel =
                           Provider.of<AuthViewModel>(context, listen: false);
-                      bool isRegistered = await authViewModel
-                          .checkEmailRegistration(emailController.text);
-                      if (isRegistered) {
-                        Navigator.pushNamed(context, '/otp_verification');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Email is not registered. Please sign up.')),
-                        );
-                      }
+                      authViewModel.email = emailController.text;
                       HttpRequest.post(
                         {
                           "endPoint": "/user/forgot",
@@ -91,7 +81,12 @@ class emailVerificationViewS extends State<EmailVerificationView> {
                         },
                       ).then((res) {
                         if (res.statusCode == 200) {
-                          Navigator.pushNamed(context, '/otp_verification');
+                          if (authViewModel.flag == 1) {
+                            Navigator.pushNamed(context, '/otpForForget');
+                          }
+                          if (authViewModel.flag == 2) {
+                            Navigator.pushNamed(context, '/otp_verification');
+                          }
                         }
                       }).catchError((error) {
                         print("Error: $error");

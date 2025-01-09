@@ -3,14 +3,37 @@ import 'package:flutter/foundation.dart';
 class AuthViewModel extends ChangeNotifier {
   bool _isLoggedIn = false;
   String? _username;
-  String? _email; // Add this line
-
+  String? _email;
+  String? _password;
+  int? _flag;
   bool get isLoggedIn => _isLoggedIn;
   String? get username => _username;
-  String? get email => _email; // Add this getter
+  String? get email => _email;
+  int? get flag => _flag;
+  String? get password => _password;
 
-  Future<bool> register(
-      String username, String password, String email, String creditCard) async {
+  set email(String? value) {
+    _email = value;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+  set username(String? value) {
+    _username = value;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+  set password(String? value) {
+    _password = value;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+  set flag(int? value) {
+    _flag = value;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+  Future<bool> register(String fullname, String username, String password,
+      String email, String phoneNumber) async {
     await Future.delayed(
         const Duration(seconds: 2)); // Simulating network delay
     _isLoggedIn = true;
@@ -45,4 +68,3 @@ class AuthViewModel extends ChangeNotifier {
     return email.contains('@');
   }
 }
-

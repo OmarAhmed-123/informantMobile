@@ -14,6 +14,7 @@ class RegisterView extends StatefulWidget {
 class registerViewS extends State<RegisterView>
     with SingleTickerProviderStateMixin {
   final formKey = GlobalKey<FormState>();
+  final fullnameController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
@@ -38,6 +39,7 @@ class registerViewS extends State<RegisterView>
 
   @override
   void dispose() {
+    fullnameController.dispose();
     usernameController.dispose();
     passwordController.dispose();
     emailController.dispose();
@@ -76,6 +78,24 @@ class registerViewS extends State<RegisterView>
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
+                        ),
+                        const SizedBox(height: 32),
+                        TextFormField(
+                          controller: fullnameController,
+                          decoration: InputDecoration(
+                            labelText: 'Full name',
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.7),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a full name for example:Mohamed Omar Noor';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 32),
                         TextFormField(
@@ -180,6 +200,7 @@ class registerViewS extends State<RegisterView>
                                   listen: false);
 
                               final success = await authViewModel.register(
+                                  fullnameController.text,
                                   usernameController.text,
                                   passwordController.text,
                                   emailController.text,
@@ -191,14 +212,17 @@ class registerViewS extends State<RegisterView>
                                   "password": passwordController.text,
                                   "username": usernameController.text,
                                   "email": emailController.text,
-                                  "details": "NOT IMPLEMENTED",
-                                  "confirmPassword": passwordController.text
+                                  "details": "wait to be filled",
+                                  "confrimPassword": passwordController.text,
+                                  "fullname": fullnameController.text,
+                                  "phoneNumber": phoneController.text
                                 }).then((res) {
                                   if (res.statusCode == 200) {
                                     try {
                                       AutoLogin.saveData(
                                           usernameController.text,
-                                          passwordController.text);
+                                          passwordController.text,
+                                          emailController.text);
                                     } catch (e) {
                                       print("error" + e.toString());
                                     }

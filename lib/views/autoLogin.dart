@@ -14,8 +14,9 @@ class AutoLogin extends StatelessWidget {
       SharedPreferences objShared = await SharedPreferences.getInstance();
       final username = objShared.getString('username');
       final password = objShared.getString('password');
+      final email = objShared.getString('email');
 
-      return username != null && password != null;
+      return (username != null || email != null) && password != null;
     } catch (e) {
       debugPrint("Error from SharedPreferences: $e");
       return false;
@@ -40,10 +41,12 @@ class AutoLogin extends StatelessWidget {
     return false;
   }
 
-  static Future<void> saveData(String username, String password) async {
+  static Future<void> saveData(
+      String username, String password, String email) async {
     SharedPreferences objShared = await SharedPreferences.getInstance();
-    objShared.setString('username', username);
+    if (username != "") objShared.setString('username', username);
     objShared.setString('password', password);
+    if (email != "") objShared.setString('email', email);
   }
 
   static Future<void> logout3() async {
