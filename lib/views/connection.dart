@@ -15,7 +15,7 @@ class ConnectionS extends State<Connection> {
     var connectResult = await Connectivity().checkConnectivity();
 
     
-    if (connectResult == ConnectivityResult.mobile ||
+    if (connectResult == ConnectivityResult.mobile || 
         connectResult == ConnectivityResult.wifi) {
       return true; 
     } else {

@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          include:
+            - lib/core/network/api_result.dart
+            - lib/features/api/cubit/api_cubit.dart
+            - lib/features/api/cubit/api_state.dart

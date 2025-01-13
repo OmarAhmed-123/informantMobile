@@ -45,11 +45,13 @@ class HttpRequest {
     else
       URL = Urls[HttpRequest.index] + endPoint;
     final url = Uri.parse(URL);
+    print("url is ${url}");
     final headers = {"Content-Type": "application/json"};
     try {
       final response = await http.get(url, headers: headers);
       return response;
     } catch (e) {
+      print("gterror${e.toString()}");
       if (index < Urls.length) {
         index++;
         return get(endPoint);
