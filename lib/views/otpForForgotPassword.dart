@@ -150,6 +150,7 @@ class otpVerificationViewS extends State<OtpForForgotPassword> {
   }
 }
 */
+
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -216,7 +217,7 @@ class _OtpForForgotPasswordState extends State<OtpForForgotPassword>
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     context
         .read<ApiCubit>()
-        .makeGetRequest('/user/sendotp?email=${authViewModel.email}');
+        .makePostRequest('/user/sendotp?email=${authViewModel.email}', {});
   }
 
   /// Handle OTP verification
@@ -235,7 +236,7 @@ class _OtpForForgotPasswordState extends State<OtpForForgotPassword>
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     context
         .read<ApiCubit>()
-        .makeGetRequest('/user/sendotp?email=${authViewModel.email}');
+        .makePostRequest('/user/sendotp?email=${authViewModel.email}', {});
   }
 
   @override

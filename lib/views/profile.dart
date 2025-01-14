@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
 //the old version not include the connection by state mangement
 
@@ -351,6 +353,9 @@ class profilePageS extends State<ProfilePage> {
   }
 }
 */
+
+//import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
@@ -414,7 +419,7 @@ class ProfilePageState extends State<ProfilePage>
 
     try {
       // Make API request to get profile data
-      await apiCubit.makeGetRequest('/api/profile');
+      await apiCubit.makePostRequest('/api/profile', {});
 
       // Load cached data while waiting for API response
       await getProfileData();
@@ -450,6 +455,8 @@ class ProfilePageState extends State<ProfilePage>
     return BlocBuilder<ApiCubit, ApiState>(
       builder: (context, state) {
         return state.when(
+          unverified: () =>
+              const Center(child: CircularProgressIndicator.adaptive()),
           initial: () => const Center(child: Text('Loading...')),
           loading: () => const Center(child: CircularProgressIndicator()),
           success: (data) => _buildProfileDetails(),

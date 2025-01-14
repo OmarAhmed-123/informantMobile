@@ -21,6 +21,7 @@ mixin _$ApiState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
     required TResult Function(NetworkException error) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -29,6 +30,7 @@ mixin _$ApiState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
     TResult? Function(NetworkException error)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -37,6 +39,7 @@ mixin _$ApiState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
     TResult Function(NetworkException error)? error,
     required TResult orElse(),
   }) =>
@@ -46,6 +49,7 @@ mixin _$ApiState {
     required TResult Function(Initial value) initial,
     required TResult Function(Loading value) loading,
     required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
     required TResult Function(Error value) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -54,6 +58,7 @@ mixin _$ApiState {
     TResult? Function(Initial value)? initial,
     TResult? Function(Loading value)? loading,
     TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
     TResult? Function(Error value)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -62,6 +67,7 @@ mixin _$ApiState {
     TResult Function(Initial value)? initial,
     TResult Function(Loading value)? loading,
     TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
     TResult Function(Error value)? error,
     required TResult orElse(),
   }) =>
@@ -126,6 +132,7 @@ class _$InitialImpl implements Initial {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
     required TResult Function(NetworkException error) error,
   }) {
     return initial();
@@ -137,6 +144,7 @@ class _$InitialImpl implements Initial {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
     TResult? Function(NetworkException error)? error,
   }) {
     return initial?.call();
@@ -148,6 +156,7 @@ class _$InitialImpl implements Initial {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
     TResult Function(NetworkException error)? error,
     required TResult orElse(),
   }) {
@@ -163,6 +172,7 @@ class _$InitialImpl implements Initial {
     required TResult Function(Initial value) initial,
     required TResult Function(Loading value) loading,
     required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
     required TResult Function(Error value) error,
   }) {
     return initial(this);
@@ -174,6 +184,7 @@ class _$InitialImpl implements Initial {
     TResult? Function(Initial value)? initial,
     TResult? Function(Loading value)? loading,
     TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
     TResult? Function(Error value)? error,
   }) {
     return initial?.call(this);
@@ -185,6 +196,7 @@ class _$InitialImpl implements Initial {
     TResult Function(Initial value)? initial,
     TResult Function(Loading value)? loading,
     TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
     TResult Function(Error value)? error,
     required TResult orElse(),
   }) {
@@ -240,6 +252,7 @@ class _$LoadingImpl implements Loading {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
     required TResult Function(NetworkException error) error,
   }) {
     return loading();
@@ -251,6 +264,7 @@ class _$LoadingImpl implements Loading {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
     TResult? Function(NetworkException error)? error,
   }) {
     return loading?.call();
@@ -262,6 +276,7 @@ class _$LoadingImpl implements Loading {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
     TResult Function(NetworkException error)? error,
     required TResult orElse(),
   }) {
@@ -277,6 +292,7 @@ class _$LoadingImpl implements Loading {
     required TResult Function(Initial value) initial,
     required TResult Function(Loading value) loading,
     required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
     required TResult Function(Error value) error,
   }) {
     return loading(this);
@@ -288,6 +304,7 @@ class _$LoadingImpl implements Loading {
     TResult? Function(Initial value)? initial,
     TResult? Function(Loading value)? loading,
     TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
     TResult? Function(Error value)? error,
   }) {
     return loading?.call(this);
@@ -299,6 +316,7 @@ class _$LoadingImpl implements Loading {
     TResult Function(Initial value)? initial,
     TResult Function(Loading value)? loading,
     TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
     TResult Function(Error value)? error,
     required TResult orElse(),
   }) {
@@ -381,6 +399,7 @@ class _$SuccessImpl implements Success {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
     required TResult Function(NetworkException error) error,
   }) {
     return success(data);
@@ -392,6 +411,7 @@ class _$SuccessImpl implements Success {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
     TResult? Function(NetworkException error)? error,
   }) {
     return success?.call(data);
@@ -403,6 +423,7 @@ class _$SuccessImpl implements Success {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
     TResult Function(NetworkException error)? error,
     required TResult orElse(),
   }) {
@@ -418,6 +439,7 @@ class _$SuccessImpl implements Success {
     required TResult Function(Initial value) initial,
     required TResult Function(Loading value) loading,
     required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
     required TResult Function(Error value) error,
   }) {
     return success(this);
@@ -429,6 +451,7 @@ class _$SuccessImpl implements Success {
     TResult? Function(Initial value)? initial,
     TResult? Function(Loading value)? loading,
     TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
     TResult? Function(Error value)? error,
   }) {
     return success?.call(this);
@@ -440,6 +463,7 @@ class _$SuccessImpl implements Success {
     TResult Function(Initial value)? initial,
     TResult Function(Loading value)? loading,
     TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
     TResult Function(Error value)? error,
     required TResult orElse(),
   }) {
@@ -457,6 +481,126 @@ abstract class Success implements ApiState {
   @JsonKey(ignore: true)
   _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UnverifiedImplCopyWith<$Res> {
+  factory _$$UnverifiedImplCopyWith(
+          _$UnverifiedImpl value, $Res Function(_$UnverifiedImpl) then) =
+      __$$UnverifiedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$UnverifiedImplCopyWithImpl<$Res>
+    extends _$ApiStateCopyWithImpl<$Res, _$UnverifiedImpl>
+    implements _$$UnverifiedImplCopyWith<$Res> {
+  __$$UnverifiedImplCopyWithImpl(
+      _$UnverifiedImpl _value, $Res Function(_$UnverifiedImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$UnverifiedImpl implements Unverified {
+  const _$UnverifiedImpl();
+
+  @override
+  String toString() {
+    return 'ApiState.unverified()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$UnverifiedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
+    required TResult Function(NetworkException error) error,
+  }) {
+    return unverified();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
+    TResult? Function(NetworkException error)? error,
+  }) {
+    return unverified?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
+    TResult Function(NetworkException error)? error,
+    required TResult orElse(),
+  }) {
+    if (unverified != null) {
+      return unverified();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Initial value) initial,
+    required TResult Function(Loading value) loading,
+    required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
+    required TResult Function(Error value) error,
+  }) {
+    return unverified(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Initial value)? initial,
+    TResult? Function(Loading value)? loading,
+    TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
+    TResult? Function(Error value)? error,
+  }) {
+    return unverified?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Initial value)? initial,
+    TResult Function(Loading value)? loading,
+    TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
+    TResult Function(Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (unverified != null) {
+      return unverified(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Unverified implements ApiState {
+  const factory Unverified() = _$UnverifiedImpl;
 }
 
 /// @nodoc
@@ -526,6 +670,7 @@ class _$ErrorImpl implements Error {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(dynamic data) success,
+    required TResult Function() unverified,
     required TResult Function(NetworkException error) error,
   }) {
     return error(this.error);
@@ -537,6 +682,7 @@ class _$ErrorImpl implements Error {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(dynamic data)? success,
+    TResult? Function()? unverified,
     TResult? Function(NetworkException error)? error,
   }) {
     return error?.call(this.error);
@@ -548,6 +694,7 @@ class _$ErrorImpl implements Error {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(dynamic data)? success,
+    TResult Function()? unverified,
     TResult Function(NetworkException error)? error,
     required TResult orElse(),
   }) {
@@ -563,6 +710,7 @@ class _$ErrorImpl implements Error {
     required TResult Function(Initial value) initial,
     required TResult Function(Loading value) loading,
     required TResult Function(Success value) success,
+    required TResult Function(Unverified value) unverified,
     required TResult Function(Error value) error,
   }) {
     return error(this);
@@ -574,6 +722,7 @@ class _$ErrorImpl implements Error {
     TResult? Function(Initial value)? initial,
     TResult? Function(Loading value)? loading,
     TResult? Function(Success value)? success,
+    TResult? Function(Unverified value)? unverified,
     TResult? Function(Error value)? error,
   }) {
     return error?.call(this);
@@ -585,6 +734,7 @@ class _$ErrorImpl implements Error {
     TResult Function(Initial value)? initial,
     TResult Function(Loading value)? loading,
     TResult Function(Success value)? success,
+    TResult Function(Unverified value)? unverified,
     TResult Function(Error value)? error,
     required TResult orElse(),
   }) {

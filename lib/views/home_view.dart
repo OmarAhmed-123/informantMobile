@@ -1036,7 +1036,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   /// Fetch home data using ApiCubit
   void _fetchHomeData() {
-    context.read<ApiCubit>().makeGetRequest('/user/home');
+    context.read<ApiCubit>().makePostRequest('/user/home', _ads);
   }
 
   @override
@@ -1342,6 +1342,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       body: BlocConsumer<ApiCubit, ApiState>(
         listener: (context, state) {
           state.when(
+            unverified: () {},
             initial: () {},
             loading: () {},
             success: (data) => setState(() => _ads = data),

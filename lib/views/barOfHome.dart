@@ -186,6 +186,7 @@ class HomeView1 extends StatelessWidget {
   }
 }
 */
+
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/home_view.dart';
@@ -197,7 +198,7 @@ import 'package:graduation___part1/views/Statistics.dart';
 import 'package:graduation___part1/views/autoProfile.dart';
 import 'package:graduation___part1/views/profile.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
-import 'package:graduation___part1/views/login_view.dart';
+import 'package:graduation___part1/views/login_feature/presentation/views/login_view.dart';
 
 class HomeView1 extends StatefulWidget {
   const HomeView1({super.key});

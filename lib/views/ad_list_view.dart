@@ -470,6 +470,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
   }
 }
 */
+
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -550,7 +551,9 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
 
   /// Fetch ads using ApiCubit
   void _fetchAds() {
-    context.read<ApiCubit>().makeGetRequest('/ads/list');
+    context
+        .read<ApiCubit>()
+        .makePostRequest('/ads/list', _ads as Map<String, dynamic>);
   }
 
   @override

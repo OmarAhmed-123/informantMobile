@@ -602,6 +602,7 @@ class RegisterViewState extends State<RegisterView>
   }
 }
 */
+
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
@@ -863,6 +864,7 @@ class RegisterViewState extends State<RegisterView>
       body: BlocConsumer<ApiCubit, ApiState>(
         listener: (context, state) {
           state.when(
+            unverified: () {},
             initial: () {},
             loading: () {},
             success: (data) => _handleRegistrationSuccess(data),

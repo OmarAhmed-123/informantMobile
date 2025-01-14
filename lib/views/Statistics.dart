@@ -909,7 +909,7 @@ class ProfitViewState extends State<ProfitView>
   /// Fetch ads data using ApiCubit
   void _fetchAds() {
     // BACKEND CONNECTION: Fetch ads data
-    context.read<ApiCubit>().makeGetRequest('/user/ads');
+    context.read<ApiCubit>().makePostRequest('/user/ads', {});
   }
 
   /// Build revenue card widget
@@ -1188,6 +1188,7 @@ class ProfitViewState extends State<ProfitView>
       body: BlocConsumer<ApiCubit, ApiState>(
         listener: (context, state) {
           state.when(
+            unverified: () {},
             initial: () {},
             loading: () {},
             success: (data) {

@@ -158,6 +158,7 @@ class otpVerificationViewS extends State<OtpVerificationView> {
   }
 }
 */
+
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -235,9 +236,12 @@ class _OtpVerificationViewState extends State<OtpVerificationView>
   /// Send initial OTP request
   void _sendInitialOtp() {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    context
-        .read<ApiCubit>()
-        .makeGetRequest('/user/sendotp?email=${authViewModel.email}');
+    context.read<ApiCubit>().makePostRequest(
+      '/user/sendotp',
+      {
+        'email': authViewModel.email,
+      },
+    );
   }
 
   /// Handle OTP verification
@@ -254,9 +258,12 @@ class _OtpVerificationViewState extends State<OtpVerificationView>
   /// Handle OTP resend
   void _resendOtp() {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    context
-        .read<ApiCubit>()
-        .makeGetRequest('/user/sendotp?email=${authViewModel.email}');
+    context.read<ApiCubit>().makePostRequest(
+      '/user/sendotp',
+      {
+        'email': authViewModel.email,
+      },
+    );
   }
 
   @override

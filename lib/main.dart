@@ -74,6 +74,7 @@ class MyAppS extends State<MyApp> {
   }
 }
 */
+
 // ignore_for_file: unused_local_variable
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,9 +83,10 @@ import 'package:no_screenshot/no_screenshot.dart';
 
 // Feature imports
 import 'features/api/cubit/api_cubit.dart';
+import 'core/network/api_client.dart';
 import 'view_models/auth_view_model.dart';
 import 'views/register_view.dart';
-import 'views/login_view.dart';
+import 'views/login_feature/presentation/views/login_view.dart';
 import 'views/home_view.dart';
 import 'views/autoLogin.dart';
 import 'views/connection.dart';
@@ -95,17 +97,18 @@ import 'views/otp_verification_view.dart';
 import 'views/otpForForgotPassword.dart';
 
 void main() {
-  // Initialize the ApiCubit for handling API requests
-  final apiCubit = ApiCubit();
+  // Initialize the ApiClient for handling API requests
+  final apiClient = ApiClient(); // Create an instance of ApiClient
 
   runApp(
     // Provide both AuthViewModel and ApiCubit to the widget tree
     MultiProvider(
       providers: [
+       
         // Provider for authentication state management
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         // BlocProvider for API communication
-        BlocProvider<ApiCubit>(create: (_) => apiCubit),
+        BlocProvider<ApiCubit>(create: (_) => ApiCubit(apiClient: apiClient)),
       ],
       child: const MyApp(),
     ),

@@ -147,6 +147,7 @@ class EmailVerificationViewState extends State<EmailVerificationView> {
             // Backend Response Handler
             listener: (context, state) {
               state.when(
+                unverified: () {},
                 initial: () {},
                 loading: () {},
                 // Handle successful API response
@@ -221,9 +222,9 @@ class EmailVerificationViewState extends State<EmailVerificationView> {
                             authViewModel.email = emailController.text;
 
                             // BACKEND CONNECTION: Send email verification request
-                            // This makes a GET request to the backend API
-                            context.read<ApiCubit>().makeGetRequest(
-                                  '/user/sendotp?email=${emailController.text}',
+                            // This makes a Post request to the backend API
+                            context.read<ApiCubit>().makePostRequest(
+                                  '/user/sendotp?email=${emailController.text}',{}
                                 );
                           }
                         },

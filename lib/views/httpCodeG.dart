@@ -13,9 +13,10 @@ class MyHttpOverrides extends HttpOverrides {
 
 class HttpRequest {
   static var Urls = [
-    'https://infinitely-native-lamprey.ngrok-free.app',
-    'https://informant122.ddns.net:7125',
-    'http://informant122.ddns.net:7125'
+    'https://infinitely-native-lamprey.ngrok-free.app'
+
+    //'https://informant122.ddns.net:7125',
+    //'http://informant122.ddns.net:7125'
   ];
   static var index = 0;
   static Future<http.Response> post(var internalBody) async {

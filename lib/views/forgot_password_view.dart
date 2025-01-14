@@ -368,6 +368,7 @@ class forgotPasswordViewS extends State<ForgotPasswordView>
   }
 }
 */
+
 // ignore_for_file: library_private_types_in_public_api, sort_child_properties_last
 
 import 'package:flutter/material.dart';
@@ -430,6 +431,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView>
         // Backend Response Handler
         listener: (context, state) {
           state.when(
+            unverified: () {},
             initial: () {},
             loading: () {},
             // Handle successful API response
