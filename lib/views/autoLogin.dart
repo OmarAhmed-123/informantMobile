@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:graduation___part1/views/login_feature/presentation/views/login_view.dart';
+import 'package:graduation___part1/views/login_view.dart';
 import 'package:graduation___part1/views/home_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
@@ -12,11 +12,10 @@ class AutoLogin extends StatelessWidget {
   Future<bool> getData() async {
     try {
       SharedPreferences objShared = await SharedPreferences.getInstance();
-      final username = objShared.getString('username');
+      final username = objShared.getString('email');
       final password = objShared.getString('password');
-      final email = objShared.getString('email');
 
-      return (username != null || email != null) && password != null;
+      return username != null && password != null;
     } catch (e) {
       debugPrint("Error from SharedPreferences: $e");
       return false;
@@ -41,12 +40,16 @@ class AutoLogin extends StatelessWidget {
     return false;
   }
 
-  static Future<void> saveData(
-      String username, String password, String email) async {
+  static Future<void> saveData(String username, String password) async {
     SharedPreferences objShared = await SharedPreferences.getInstance();
-    if (username != "") objShared.setString('username', username);
+    objShared.setString('username', username);
     objShared.setString('password', password);
-    if (email != "") objShared.setString('email', email);
+  }
+
+  static Future<void> saveEmail(String email) async {
+    SharedPreferences objShared = await SharedPreferences.getInstance();
+
+    objShared.setString('email', email);
   }
 
   static Future<void> logout3() async {

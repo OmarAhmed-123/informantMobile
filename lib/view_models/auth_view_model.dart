@@ -32,8 +32,8 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners(); // Notify listeners about the change
   }
 
-  Future<bool> register(String fullname, String username, String password,
-      String email, String phoneNumber) async {
+  Future<bool> register(
+      String username, String password, String email, String creditCard) async {
     await Future.delayed(
         const Duration(seconds: 2)); // Simulating network delay
     _isLoggedIn = true;
