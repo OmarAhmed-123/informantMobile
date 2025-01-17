@@ -27,8 +27,8 @@ class homeView extends State<HomeView> {
     verticalPage = PageController(viewportFraction: 0.85);
     scrollHorizontal = ScrollController();
     startOfAutoScroll();
-    setState(() {
       getAds();
+    setState(() {
       _ads = ads;
     });
   }

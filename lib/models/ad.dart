@@ -46,7 +46,6 @@ class Ad {
 }
 */
 
-import 'dart:ffi';
 import 'dart:io';
 
 class Ad {

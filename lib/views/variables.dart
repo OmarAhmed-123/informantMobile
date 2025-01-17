@@ -187,16 +187,17 @@ List<Map<String, dynamic>> ads = [];
 Future<void> getAds() async {
   final res = await HttpRequest.post({
     "endPoint": "/user/home",
-  });
-
-  if (res.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(res.body);
-    if (data['messages']['content'] != null) {
-      ads = List<Map<String, dynamic>>.from(data['messages']['content']);
+  }).then((res) {
+    print("error home_${res.body}");
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      if (data['messages']['content'] != null) {
+        ads = List<Map<String, dynamic>>.from(data['messages']['content']);
+      } else {
+        throw Exception('No content found');
+      }
     } else {
-      throw Exception('No content found');
+      throw Exception('Failed to load ads');
     }
-  } else {
-    throw Exception('Failed to load ads');
-  }
+  });
 }
