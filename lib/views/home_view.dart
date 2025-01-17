@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:graduation___part1/views/variables.dart';
 import 'package:graduation___part1/views/barOfHome.dart';
 import 'dart:io';
+import 'package:graduation___part1/views/httpCodeG.dart';
+import 'package:http/http.dart' as http;
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -27,7 +29,7 @@ class homeView extends State<HomeView> {
     verticalPage = PageController(viewportFraction: 0.85);
     scrollHorizontal = ScrollController();
     startOfAutoScroll();
-      getAds();
+    getAds();
     setState(() {
       _ads = ads;
     });
@@ -105,92 +107,107 @@ class homeView extends State<HomeView> {
         itemCount: ads.length,
         itemBuilder: (context, index) {
           final ad = ads[index];
-          String img = ad['images'][0];
-          return GestureDetector(
-            onTapDown: (_) {
-              isScrollD = true;
-            },
-            onTapUp: (_) {
-              isScrollD = false;
-            },
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: 1.0,
-              child: Container(
-                width: itemWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    colors: [Colors.blue.shade900, Colors.black87],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54.withOpacity(0.4),
-                      offset: const Offset(0, 8),
-                      blurRadius: 15,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(16)),
-                      child: img.startsWith('file://')
-                          ? Image.file(
-                              File(Uri.parse(img).path),
-                              fit: BoxFit.cover,
-                              height: 190,
-                              width: double.infinity,
-                            )
-                          : Image.network(
-                              img,
-                              fit: BoxFit.cover,
-                              height: heightImg,
-                              width: double.infinity,
-                            ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            ad['name'],
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            ad['details'],
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white70,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Potential Revenue: \$${ad['potentialRevenue']}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.greenAccent,
-                            ),
-                          ),
-                        ],
+          String imgUrl =
+              "https://infinitely-native-lamprey.ngrok-free.app/files/image?imgName=${ad["images"][0]}&type=adpics";
+
+          return FutureBuilder<http.Response>(
+            future: HttpRequest.get(imgUrl), // Use your get method
+            builder: (context, snapshot) {
+              Widget imageWidget;
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                imageWidget = const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError ||
+                  snapshot.data?.statusCode != 200) {
+                imageWidget = const Icon(Icons.broken_image,
+                    size: 100, color: Colors.red);
+              } else {
+                // Render image from raw data
+                imageWidget = Image.memory(
+                  snapshot.data!.bodyBytes,
+                  fit: BoxFit.cover,
+                  height: heightImg,
+                  width: double.infinity,
+                );
+              }
+
+              return GestureDetector(
+                onTapDown: (_) {
+                  isScrollD = true;
+                },
+                onTapUp: (_) {
+                  isScrollD = false;
+                },
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 500),
+                  opacity: 1.0,
+                  child: Container(
+                    width: itemWidth,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue.shade900, Colors.black87],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black54.withOpacity(0.4),
+                          offset: const Offset(0, 8),
+                          blurRadius: 15,
+                        ),
+                      ],
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16)),
+                          child: imageWidget, // Use the dynamic image widget
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ad['name'],
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                ad['details'],
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white70,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Potential Revenue: \$${ad['potentialRevenue']}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.greenAccent,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

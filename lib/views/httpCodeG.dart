@@ -51,6 +51,7 @@ class HttpRequest {
     var headers = {
       "Content-Type": "application/json",
       'ngrok-skip-browser-warning': 'true'
+      // "ngrok-skip-browser-warning": "69420"
     };
     if (token != null && ptoken != null) {
       // headers[HttpHeaders.cookieHeader] ="TokenCookie=${token}; pToken=${ptoken}";
@@ -69,7 +70,7 @@ class HttpRequest {
       // print("zeft_headers ${headers}");
       final response = await http.post(url, headers: headers, body: body);
       print("zeft_requestBody ${response.statusCode}");
-      print("zeft_requestBody ${response.body}");
+      // print("zeft_requestBody ${response.body}");
       return response;
     } catch (e) {
       // print("zeft_Faild:${e.toString()}");
@@ -77,7 +78,7 @@ class HttpRequest {
     }
   }
 
-  static Future<http.Response> get(String endPoint, List<String> token) async {
+  static Future<http.Response> get(String endPoint) async {
     var URL = '';
     if (endPoint.indexOf("http") == 0)
       URL = endPoint;

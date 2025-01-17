@@ -22,7 +22,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
   late Animation<Offset> slideAnimation;
   int currentImageIndex = 0;
 
-  List<Map<String, dynamic>> ads = [
+  List<Map<String, dynamic>> Ads = [
     {
       "name": "Ali Cafe",
       "details":
@@ -452,8 +452,8 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
         ),
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: ads.length,
-          itemBuilder: (context, index) => buildAdCard(ads[index], index),
+          itemCount: Ads.length,
+          itemBuilder: (context, index) => buildAdCard(Ads[index], index),
         ),
       ),
     );
@@ -463,6 +463,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:graduation___part1/views/variables.dart';
 import '../models/ad.dart';
 import 'ad_detail_view.dart';
 import 'package:graduation___part1/views/home_view.dart';
@@ -481,140 +482,12 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
   late Animation<double> fadeAnimation;
   late Animation<Offset> slideAnimation;
   int currentImageIndex = 0;
-
-  List<Map<String, dynamic>> ads = [
-    {
-      "name": "Ali Cafe",
-      "details":
-          "Ali Cafe is a fast coffee brand, providing instant coffee solutions for people on the go. Known for its rich and strong flavor, it's perfect for a quick pick-me-up at any time of the day. Whether you're at home, at work, or traveling, Ali Cafe offers a convenient way to enjoy a delicious cup of coffee in seconds. Simply add hot water, stir, and you're ready to go!",
-      "stars": 4,
-      "potentialRevenue": 750,
-      "images": [
-        "https://i5.walmartimages.com/seo/Alicafe-Classic-3-In-1-Instant-Coffee-Bag-Ground-30-X-20G-600G_58d646a8-7b89-4524-a667-847665159273.a0da51f0eec72ac0cfd2f387788129da.jpeg",
-        "https://m.media-amazon.com/images/I/51IozBoN4kL._SS1000_.jpg",
-        "https://images.deliveryhero.io/image/product-information-management/663b03d05c2a36ba98195fe8.png?size=520"
-      ],
-      "availablePlaces": 12,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe 5438dc",
-      "details":
-          "Cafe 5438dc is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 1,
-      "potentialRevenue": 569,
-      "images": [
-        "https://picsum.photos/200/300?random=40",
-        "https://picsum.photos/200/300?random=177",
-        "https://picsum.photos/200/300?random=230"
-      ],
-      "availablePlaces": 15,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe C24e9e",
-      "details":
-          "Cafe C24e9e is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 4,
-      "potentialRevenue": 968,
-      "images": [
-        "https://picsum.photos/200/300?random=85",
-        "https://picsum.photos/200/300?random=1310",
-        "https://picsum.photos/200/300?random=2948"
-      ],
-      "availablePlaces": 20,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe 3f0de5",
-      "details":
-          "Cafe 3f0de5 is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 2,
-      "potentialRevenue": 514,
-      "images": [
-        "https://picsum.photos/200/300?random=645",
-        "https://picsum.photos/200/300?random=1450",
-        "https://picsum.photos/200/300?random=2238"
-      ],
-      "availablePlaces": 14,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe 873a62",
-      "details":
-          "Cafe 873a62 is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 3,
-      "potentialRevenue": 601,
-      "images": [
-        "https://picsum.photos/200/300?random=197",
-        "https://picsum.photos/200/300?random=1072",
-        "https://picsum.photos/200/300?random=2970"
-      ],
-      "availablePlaces": 12,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe 53fefd",
-      "details":
-          "Cafe 53fefd is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 1,
-      "potentialRevenue": 716,
-      "images": [
-        "https://picsum.photos/200/300?random=30",
-        "https://picsum.photos/200/300?random=1592",
-        "https://picsum.photos/200/300?random=2758"
-      ],
-      "availablePlaces": 9,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe A5de3a",
-      "details":
-          "Cafe A5de3a is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 3,
-      "potentialRevenue": 776,
-      "images": [
-        "https://picsum.photos/200/300?random=302",
-        "https://picsum.photos/200/300?random=1275",
-        "https://picsum.photos/200/300?random=2995"
-      ],
-      "availablePlaces": 9,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe 2b6ec0",
-      "details":
-          "Cafe 2b6ec0 is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 1,
-      "potentialRevenue": 299,
-      "images": [
-        "https://picsum.photos/200/300?random=967",
-        "https://picsum.photos/200/300?random=1032",
-        "https://picsum.photos/200/300?random=2163"
-      ],
-      "availablePlaces": 6,
-      "creatorName": "COMPANY NAME"
-    },
-    {
-      "name": "Cafe B7ae1c",
-      "details":
-          "Cafe B7ae1c is known for its quick and flavorful coffee offerings. Customers love the convenience and rich taste, making it perfect for busy mornings or quick coffee breaks.",
-      "stars": 1,
-      "potentialRevenue": 675,
-      "images": [
-        "https://picsum.photos/200/300?random=994",
-        "https://picsum.photos/200/300?random=1851",
-        "https://picsum.photos/200/300?random=2379"
-      ],
-      "availablePlaces": 10,
-      "creatorName": "COMPANY NAME"
-    }
-  ];
-
+  List<Map<String, dynamic>> Ads = [];
   @override
   void initState() {
     super.initState();
     initiAnimations();
+    Ads=ads;
   }
 
   void initiAnimations() {
@@ -913,8 +786,8 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
         ),
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: ads.length,
-          itemBuilder: (context, index) => buildAdCard(ads[index], index),
+          itemCount: Ads.length,
+          itemBuilder: (context, index) => buildAdCard(Ads[index], index),
         ),
       ),
     );
@@ -951,7 +824,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
 
   // State variables
   int _currentImageIndex = 0;
-  List<Map<String, dynamic>> _ads = [];
+  List<Map<String, dynamic>> _Ads = [];
 
   @override
   void initState() {
@@ -999,11 +872,11 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
     _scaleController.forward();
   }
 
-  /// Fetch ads using ApiCubit
+  /// Fetch Ads using ApiCubit
   void _fetchAds() {
     context
         .read<ApiCubit>()
-        .makePostRequest('/ads/list', _ads as Map<String, dynamic>);
+        .makePostRequest('/Ads/list', _Ads as Map<String, dynamic>);
   }
 
   @override
@@ -1289,7 +1162,7 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
         listener: (context, state) {
           state.whenOrNull(
             success: (data) =>
-                setState(() => _ads = List<Map<String, dynamic>>.from(data)),
+                setState(() => _Ads = List<Map<String, dynamic>>.from(data)),
             error: (error) => ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(error.message)),
             ),
@@ -1315,9 +1188,9 @@ class _AdListViewState extends State<AdListView> with TickerProviderStateMixin {
               ),
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: _ads.length,
+                itemCount: _Ads.length,
                 itemBuilder: (context, index) =>
-                    _buildAdCard(_ads[index], index),
+                    _buildAdCard(_Ads[index], index),
               ),
             ),
           );
