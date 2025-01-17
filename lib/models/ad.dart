@@ -46,13 +46,14 @@ class Ad {
 }
 */
 
+import 'dart:ffi';
 import 'dart:io';
 
 class Ad {
-  final String id;
+  final int id;
   final String name;
   final String details;
-  final double price;
+//  final double price;
   final List<String>? imageUrl; // Make imageUrl nullable
   final DateTime createdAt;
   final double earnings;
@@ -68,7 +69,7 @@ class Ad {
     required this.id,
     required this.name,
     required this.details,
-    required this.price,
+    //required this.price,
     this.imageUrl, // imageUrl is now optional
     required this.createdAt,
     required this.earnings,
@@ -83,12 +84,12 @@ class Ad {
 
   factory Ad.fromJson(Map<String, dynamic> json) {
     return Ad(
-      id: json['id'] ?? DateTime.now().toString(),
+      id: json['id'],
       name: json['name'],
       description: json['description'] ?? '',
       imageFile: json['imageFile'] != null ? File(json['imageFile']) : null,
       details: json['details'],
-      price: (json['price'] ?? 0.0).toDouble(),
+//      price: (json['price'] ?? 0.0).toDouble(),
       imageUrl: json['imageUrl'] != null
           ? List<String>.from(json['imageUrl'])
           : null, // Handle nullable imageUrl
@@ -111,7 +112,7 @@ class Ad {
       'description': description,
       'imageFile': imageFile?.path,
       'details': details,
-      'price': price,
+      // 'price': price,
       'imageUrl': imageUrl, // Serialize imageUrl, even if null
       'createdAt': createdAt.toIso8601String(),
       'earnings': earnings,

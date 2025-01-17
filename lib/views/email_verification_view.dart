@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
 
 class EmailVerificationView extends StatefulWidget {
@@ -72,40 +75,46 @@ class emailVerificationViewS extends State<EmailVerificationView> {
                   ),
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
+                      final prefs = await SharedPreferences.getInstance();
                       final authViewModel =
                           Provider.of<AuthViewModel>(context, listen: false);
                       authViewModel.email = emailController.text;
                       AutoLogin.saveEmail(emailController.text);
 
-                      // if (authViewModel.flag == 1) {
-                      HttpRequest.post(
-                        {
-                          "endPoint":
-                              "/user/forgot?email=${emailController.text}",
-                        },
-                      ).then((res) {
-                        print("errorzeft${res.statusCode}");
-                        if (res.statusCode == 204) {
-                          Navigator.pushNamed(context, '/otpForForget');
-                        }
-                      }).catchError((error) {
-                        print("Error: $error");
-                      });
-                      // }
-                      // if (authViewModel.flag == 2) {
-                      //   HttpRequest.post(
-                      //     {
-                      //       "endPoint":
-                      //           "/user/sendotp?email=${emailController.text}",
-                      //     },
-                      //   ).then((res) {
-                      //     if (res.statusCode == 204) {
-                      //       Navigator.pushNamed(context, '/otp_verification');
-                      //     }
-                      //   }).catchError((error) {
-                      //     print("Error: $error");
-                      //   });
-                      // }
+                      final flag = prefs.getInt("flag");
+                      if (flag == 1) {
+                        HttpRequest.post(
+                          {
+                            "endPoint":
+                                "/user/forgot?email=${emailController.text}",
+                          },
+                        ).then((res) async {
+                          print("errorzeft${res.statusCode}");
+                          if (res.statusCode == 200) {
+                            final Map<String, dynamic> data =
+                                json.decode(res.body);
+                            await prefs.setString(
+                                'pToken', data["messages"]["content"] ?? "");
+                            Navigator.pushNamed(context, '/otpForForget');
+                          }
+                        }).catchError((error) {
+                          print("Error: $error");
+                        });
+                      }
+                      if (flag == 2) {
+                        HttpRequest.post(
+                          {
+                            "endPoint":
+                                "/user/sendotp?email=${emailController.text}",
+                          },
+                        ).then((res) {
+                          if (res.statusCode == 204) {
+                            Navigator.pushNamed(context, '/otp_verification');
+                          }
+                        }).catchError((error) {
+                          print("Error: $error");
+                        });
+                      }
                     }
                   },
                   child: const Text('Send Verification Code'),

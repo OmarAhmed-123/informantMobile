@@ -821,7 +821,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
                               MaterialPageRoute(
                                 builder: (context) => AdDetailView(
                                   ad: Ad(
-                                    id: index.toString(),
+                                    id: ad['id'],
                                     name: ad['name'],
                                     details: ad['details'],
                                     description: ad['details'],
@@ -832,7 +832,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
                                             .toDouble(),
                                     availablePlaces: ad['availablePlaces'],
                                     creatorName: ad['creatorName'],
-                                    price: 0.0,
+                                   // price: 0.0,
                                     createdAt: DateTime.now(),
                                     earnings: 0.0,
                                   ),

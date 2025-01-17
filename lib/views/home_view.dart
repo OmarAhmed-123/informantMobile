@@ -28,6 +28,7 @@ class homeView extends State<HomeView> {
     scrollHorizontal = ScrollController();
     startOfAutoScroll();
     setState(() {
+      getAds();
       _ads = ads;
     });
   }

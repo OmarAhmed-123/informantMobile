@@ -30,7 +30,6 @@ class otpVerificationViewS extends State<OtpVerificationView> {
   void initState() {
     super.initState();
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    HttpRequest.get("/user/sendotp?email=${authViewModel.email}");
   }
 
   @override
@@ -111,10 +110,6 @@ class otpVerificationViewS extends State<OtpVerificationView> {
                       SharedPreferences objShared =
                           await SharedPreferences.getInstance();
                       final email = objShared.getString('email');
-                      final authViewModel =
-                          Provider.of<AuthViewModel>(context, listen: false);
-                      String name = authViewModel.username!;
-                      String pass = authViewModel.password!;
                       String otp = otpControllers
                           .map((controller) => controller.text)
                           .join();
@@ -125,7 +120,6 @@ class otpVerificationViewS extends State<OtpVerificationView> {
                       }).then((res) {
                         if (res.statusCode == 200) {
                           print('Entered OTP: $otp');
-                          AutoLogin.saveData(name, pass);
                           Navigator.pushReplacementNamed(context, '/home');
                         }
                       });

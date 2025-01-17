@@ -1,6 +1,7 @@
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -197,6 +198,9 @@ class registerViewS extends State<RegisterView>
                               final authViewModel = Provider.of<AuthViewModel>(
                                   context,
                                   listen: false);
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setInt('flag', 2);
 
                               final success = await authViewModel.register(
                                   usernameController.text,
@@ -209,17 +213,19 @@ class registerViewS extends State<RegisterView>
                                   "endPoint": "/user/signup",
                                   "password": passwordController.text,
                                   "username": usernameController.text,
-                                  "email": emailController.text,
-                                  "details": " ",
-                                  "confirmPassword": passwordController.text,
+                                  " ": emailController.text,
+                                  "details": "",
+                                  "ConfirmPassword": passwordController.text,
                                   "fullName": fullnameController.text,
                                   "phoneNumber": phoneController.text,
-                                  "linkedIn": " "
-                                }).then((res) {
+                                  "linkedIn": ""
+                                }).then((res) async {
+                                  print(res.statusCode);
                                   if (res.statusCode == 204) {
-                                      AutoLogin.saveData(
-                                          usernameController.text,
-                                          passwordController.text);
+                                    await prefs.setString(
+                                        'email', emailController.text);
+                                    AutoLogin.saveData(usernameController.text,
+                                        passwordController.text);
                                     Navigator.pushReplacementNamed(
                                         context, '/otp_verification');
                                   }

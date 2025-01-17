@@ -1,6 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages, body_might_complete_normally_catch_error
+import 'dart:convert';
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
@@ -22,6 +26,9 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> fadeAnimation;
   bool visiblePassword2 = false;
+  late String str;
+  late bool flag;
+  late String message;
 
   @override
   void initState() {
@@ -44,50 +51,38 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
   }
 
   Future<void> loginFun() async {
+    final prefs = await SharedPreferences.getInstance();
     if (formKey.currentState!.validate()) {
       final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
       HttpRequest.post({
         "endPoint": "/user/login",
         "username": emailController.text,
         "password": passwordController.text
-      })
-          .then((res) => {
-                if (res.statusCode == 200)
-                  {
-                    AutoLogin.saveData(
-                        emailController.text, passwordController.text),
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Login successful!')),
-                    ),
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeView()))
-                  }
-                else if (res.statusCode == 204)
-                  {
-                    authViewModel.password = passwordController.text,
-                    if ((emailController.text).contains("@"))
-                      {
-                        authViewModel.email = emailController.text,
-                        Navigator.pushReplacementNamed(
-                            context, '/otp_verification'),
-                      }
-                    else
-                      {
-                        authViewModel.flag = 2,
-                        authViewModel.username = emailController.text,
-                        Navigator.pushReplacementNamed(
-                            context, '/email_verification'),
-                      }
-                  }
-                else
-                  {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Error: Status Code ${res.statusCode}')))
-                  }
-              })
-          .catchError((error) {
+      }).then((res) async {
+        if (res.statusCode == 200) {
+          final Map<String, dynamic> data = json.decode(res.body);
+          await prefs.setString('CookieToken', data["token"] ?? "");
+          await prefs.setString('pToken', data["ptoken"] ?? "");
+          AutoLogin.saveData(emailController.text, passwordController.text);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Login successful!')));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomeView()));
+        } else if (res.statusCode == 204) {
+          authViewModel.password = passwordController.text;
+          if ((emailController.text).contains("@")) {
+            await prefs.setString('email', emailController.text);
+            Navigator.pushReplacementNamed(context, '/otp_verification');
+          } else {
+            authViewModel.flag = 2;
+            authViewModel.username = emailController.text;
+            Navigator.pushReplacementNamed(context, '/email_verification');
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error: Status Code ${res.statusCode}')));
+        }
+      }).catchError((error) {
         print("Error: $error");
       });
     }
@@ -194,10 +189,12 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         final authViewModel =
                             Provider.of<AuthViewModel>(context, listen: false);
                         authViewModel.flag = 1;
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setInt('flag', 1);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -45,7 +45,6 @@ class MyAppS extends State<MyApp> {
   void initState() {
     super.initState();
     // no.screenshotOff();
-    // getAds();
   }
 
   @override

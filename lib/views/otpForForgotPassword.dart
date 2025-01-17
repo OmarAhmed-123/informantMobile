@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, unused_local_variable
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +107,7 @@ class otpVerificationViewS extends State<OtpForForgotPassword> {
                     ),
                   ),
                   onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
                     if (formKey.currentState!.validate()) {
                       SharedPreferences objShared =
                           await SharedPreferences.getInstance();
@@ -116,10 +119,18 @@ class otpVerificationViewS extends State<OtpForForgotPassword> {
                         "endPoint": "/user/verify",
                         "otp": otp,
                         "email": email
-                      }).then((res) {
-                        if (res.statusCode == 200) {
-                          print('Entered OTP: $otp');
+                      }).then((res) async {
+                        print('Entered OTP: $otp');
+                        if (res.statusCode == 201) {
+                          final Map<String, dynamic> data =
+                              json.decode(res.body);
+                          await prefs.setString(
+                              'CookieToken', data["messages"]["content"]);
+                          await prefs.setString('pToken', "");
                           Navigator.pushReplacementNamed(context, '/forgot');
+                        } else {
+                          print(res.statusCode);
+                          print(json.decode(res.body));
                         }
                       });
                     }
@@ -130,8 +141,8 @@ class otpVerificationViewS extends State<OtpForForgotPassword> {
                 TextButton(
                   onPressed: () async {
                     SharedPreferences objShared =
-                          await SharedPreferences.getInstance();
-                      final email = objShared.getString('email');
+                        await SharedPreferences.getInstance();
+                    final email = objShared.getString('email');
                     HttpRequest.post({
                       "endPoint": "/user/sendotp?email=${email}",
                     }).then((res) {
