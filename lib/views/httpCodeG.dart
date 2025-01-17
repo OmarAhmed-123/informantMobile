@@ -69,6 +69,7 @@ class HttpRequest {
       // print("zeft_headers ${headers}");
       final response = await http.post(url, headers: headers, body: body);
       print("zeft_requestBody ${response.statusCode}");
+      print("zeft_requestBody ${response.body}");
       return response;
     } catch (e) {
       // print("zeft_Faild:${e.toString()}");
