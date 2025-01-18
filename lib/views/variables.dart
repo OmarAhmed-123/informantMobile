@@ -203,21 +203,3 @@ Future<void> getAds() async {
     }
   });
 }
-
-List<Map<String, dynamic>> ads1 = [
-  {
-    "id": 1,
-    "name": "Ali Cafe",
-    "details":
-        "Ali Cafe is a fast coffee brand, providing instant coffee solutions for people on the go. Known for its rich and strong flavor, it's perfect for a quick pick-me-up at any time of the day. Whether you're at home, at work, or traveling, Ali Cafe offers a convenient way to enjoy a delicious cup of coffee in seconds. Simply add hot water, stir, and you're ready to go!",
-    "stars": 4,
-    "potentialRevenue": 750,
-    "images": [
-      "https://i5.walmartimages.com/seo/Alicafe-Classic-3-In-1-Instant-Coffee-Bag-Ground-30-X-20G-600G_58d646a8-7b89-4524-a667-847665159273.a0da51f0eec72ac0cfd2f387788129da.jpeg",
-      "https://m.media-amazon.com/images/I/51IozBoN4kL._SS1000_.jpg",
-      "https://images.deliveryhero.io/image/product-information-management/663b03d05c2a36ba98195fe8.png?size=520"
-    ],
-    "availablePlaces": 12,
-    "creatorName": "COMPANY NAME"
-  }
-];

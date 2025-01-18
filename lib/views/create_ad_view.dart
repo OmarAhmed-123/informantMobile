@@ -619,12 +619,14 @@ class Plan {
   final String name;
   final String description;
   final double price;
+  final double NoMonths;
 
   Plan({
     required this.id,
     required this.name,
     required this.description,
     required this.price,
+    required this.NoMonths,
   });
 }
 
@@ -659,20 +661,23 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     Plan(
       id: 0,
       name: 'Basic Plan',
-      description: 'Boost your business with cost-effective advertising...',
+      description: 'Boost your business with cost-effective advertising by choosing our Basic Plan, which offers a competitive view rate of 0.11% for additional views. Save money while maximizing your reach.\n🔥MONTHES: 1',
       price: 4500,
+      NoMonths:1
     ),
     Plan(
       id: 1,
       name: 'Growth Accelerator Plan',
-      description: 'Growth Accelerator Plan: Maximize Exposure with In...',
+      description: 'Growth Accelerator Plan: Maximize Exposure with Indeed and Google Ads Our Growth Accelerator Plan is crafted to significantly expand your reach by leveraging both Indeed and Google Ads. This plan is designed to attract more employers and increase visibility for your ads, offering a competitive rate of 0.13% per 100 views.\n🔥MONTHES: 2',
       price: 15000,
+      NoMonths:2
     ),
     Plan(
       id: 2,
       name: 'Omni-Channel Growth Mastery Plan',
-      description: 'Omni-Channel Growth Mastery Plan: Unlock the Full...',
+      description: 'Omni-Channel Growth Mastery Plan: Unlock the Full Potential of Multi-Platform Advertising Our Omni-Channel Growth Mastery Plan is expertly crafted to maximize your brand’s exposure across the most impactful digital advertising platforms. This comprehensive plan strategically targets key touchpoints, ensuring your message reaches the right audience through Google, YouTube, Facebook, Twitter, and other major social media channels. Managed by a team of seasoned freelancers and influencers, this plan offers a highly effective rate of 0.002% per 100 views. \n🔥MONTHES: 3',
       price: 50000,
+      NoMonths:3
     ),
   ];
 
