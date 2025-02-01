@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import '../../view_models/auth_view_model.dart';
-import '../ad_list/view/ad_list_view.dart';
-import '../create_ad/view/create_ad_view.dart';
-import '../statistics/view/Statistics.dart';
+import '../ad_list_view.dart';
+import '../create_ad_view.dart';
+import '../Statistics.dart';
 
 class UserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
