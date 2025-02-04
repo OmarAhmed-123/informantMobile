@@ -10,7 +10,7 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   Future<void> login(String username, String password) async {
-    emit(AuthLoading()); // Emit loading state
+    emit(AuthLoading());
     try {
       final dio = Dio();
       final appDocDir = await getApplicationDocumentsDirectory();
@@ -30,25 +30,23 @@ class AuthCubit extends Cubit<AuthState> {
         await prefs.setString('CookieToken', data["token"] ?? "");
         await prefs.setString('pToken', data["ptoken"] ?? "");
 
-        emit(AuthSuccess()); // Emit success state
+        emit(AuthSuccess());
       } else {
-        emit(AuthFailure(
-            error:
-                'Login failed: ${response.statusCode}')); // Emit failure state
+        emit(AuthFailure(error: 'Login failed: ${response.statusCode}'));
       }
     } catch (e) {
-      emit(AuthFailure(error: e.toString())); // Emit failure state with error
+      emit(AuthFailure(error: e.toString()));
     }
   }
 
-    Future<void> register(
+  Future<void> register(
     String username,
     String password,
     String email,
     String phone,
     String fullName,
   ) async {
-    emit(AuthLoading()); // Emit loading state
+    emit(AuthLoading());
     try {
       final dio = Dio();
       final appDocDir = await getApplicationDocumentsDirectory();
@@ -74,29 +72,76 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 204) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('email', email);
-        emit(AuthSuccess()); // Emit success state
+        emit(AuthSuccess());
       } else {
-        emit(AuthFailure(
-            error:
-                'Registration failed: ${response.statusCode}')); // Emit failure state
+        emit(AuthFailure(error: 'Registration failed: ${response.statusCode}'));
       }
     } catch (e) {
-      emit(AuthFailure(error: e.toString())); // Emit failure state with error
+      emit(AuthFailure(error: e.toString()));
     }
   }
 
+  Future<void> forgotPassword(String email) async {
+    emit(AuthLoading());
+    try {
+      final dio = Dio();
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final cookiePath = join(appDocDir.path, 'cookies');
+      final cookieJar = PersistCookieJar(storage: FileStorage(cookiePath));
+      dio.interceptors.add(CookieManager(cookieJar));
+
+      final response = await dio.post(
+        'https://infinitely-native-lamprey.ngrok-free.app/forgot-password',
+        data: {'email': email},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthFailure(
+            error: 'Password reset failed: ${response.statusCode}'));
+      }
+    } catch (e) {
+      emit(AuthFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> sendOtp(String email) async {
+    emit(AuthLoading());
+    try {
+      final dio = Dio();
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final cookiePath = join(appDocDir.path, 'cookies');
+      final cookieJar = PersistCookieJar(storage: FileStorage(cookiePath));
+      dio.interceptors.add(CookieManager(cookieJar));
+
+      final response = await dio.post(
+        'https://infinitely-native-lamprey.ngrok-free.app/send-otp',
+        data: {'email': email},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthFailure(error: 'OTP sending failed: ${response.statusCode}'));
+      }
+    } catch (e) {
+      emit(AuthFailure(error: e.toString()));
+    }
+  }
 }
 
-// Auth State
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {} // Initial state
+class AuthInitial extends AuthState {}
 
-class AuthLoading extends AuthState {} // Loading state
+class AuthLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {} // Success state
+class AuthSuccess extends AuthState {}
 
 class AuthFailure extends AuthState {
   final String error;
-  AuthFailure({required this.error}); // Failure state with error message
+  AuthFailure({required this.error});
 }

@@ -131,8 +131,8 @@ class emailVerificationViewS extends State<EmailVerificationView> {
 
 */
 
-import 'dart:convert';
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
@@ -140,18 +140,16 @@ import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
-
-// Global navigator key to handle navigation outside the widget tree
-import 'package:graduation___part1/views/variables.dart'; // Import the shared variables file
+import 'auth_cubit.dart' as auth_cubit;
 
 class EmailVerificationView extends StatefulWidget {
   const EmailVerificationView({Key? key}) : super(key: key);
 
   @override
-  emailVerificationViewS createState() => emailVerificationViewS();
+  EmailVerificationViewState createState() => EmailVerificationViewState();
 }
 
-class emailVerificationViewS extends State<EmailVerificationView> {
+class EmailVerificationViewState extends State<EmailVerificationView> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
 
@@ -182,7 +180,6 @@ class emailVerificationViewS extends State<EmailVerificationView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Email Input Field
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
@@ -201,7 +198,6 @@ class emailVerificationViewS extends State<EmailVerificationView> {
                   },
                 ),
                 const SizedBox(height: 24),
-                // Send Verification Code Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.purple[700],
@@ -222,13 +218,13 @@ class emailVerificationViewS extends State<EmailVerificationView> {
 
                       final flag = prefs.getInt("flag");
                       if (flag == 1) {
-                        // Use Cubit to handle forgot password flow
                         context
-                            .read<AuthCubit>()
+                            .read<auth_cubit.AuthCubit>()
                             .forgotPassword(emailController.text);
                       } else if (flag == 2) {
-                        // Use Cubit to handle OTP sending flow
-                        context.read<AuthCubit>().sendOtp(emailController.text);
+                        context
+                            .read<auth_cubit.AuthCubit>()
+                            .sendOtp(emailController.text);
                       }
                     }
                   },
@@ -241,73 +237,4 @@ class emailVerificationViewS extends State<EmailVerificationView> {
       ),
     );
   }
-}
-
-// AuthCubit for handling email verification logic
-class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
-
-  // Method to handle forgot password flow
-  Future<void> forgotPassword(String email) async {
-    emit(AuthLoading()); // Emit loading state
-    try {
-      final response = await HttpRequest.post(
-        {
-          "endPoint": "/user/forgot?email=$email",
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.toString());
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('pToken', data["messages"]["content"] ?? "");
-
-        emit(AuthSuccess()); // Emit success state
-        // Navigate to OTP screen using the global navigator key
-        navigatorKey.currentState?.pushNamed('/otpForForget');
-      } else {
-        emit(AuthFailure(
-            error:
-                'Failed to send forgot password request')); // Emit failure state
-      }
-    } catch (e) {
-      emit(AuthFailure(error: e.toString())); // Emit error state
-    }
-  }
-
-  // Method to handle OTP sending flow
-  Future<void> sendOtp(String email) async {
-    emit(AuthLoading()); // Emit loading state
-    try {
-      final response = await HttpRequest.post(
-        {
-          "endPoint": "/user/sendotp?email=$email",
-        },
-      );
-
-      if (response.statusCode == 204) {
-        emit(AuthSuccess()); // Emit success state
-        // Navigate to OTP screen using the global navigator key
-        navigatorKey.currentState?.pushNamed('/otp_verification');
-      } else {
-        emit(AuthFailure(error: 'Failed to send OTP')); // Emit failure state
-      }
-    } catch (e) {
-      emit(AuthFailure(error: e.toString())); // Emit error state
-    }
-  }
-}
-
-// AuthState definitions
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthSuccess extends AuthState {}
-
-class AuthFailure extends AuthState {
-  final String error;
-  AuthFailure({required this.error});
 }

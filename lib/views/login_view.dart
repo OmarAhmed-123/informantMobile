@@ -229,10 +229,12 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
   }
 }
 */
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages
+
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages, body_might_complete_normally_catch_error
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_view.dart';
 import 'register_view.dart';
@@ -245,47 +247,60 @@ import 'package:provider/provider.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
-  Future<void> login(String username, String password) async {
+  Future<void> login(
+      String username, String password, BuildContext context) async {
     emit(AuthLoading()); // Emit loading state
-    try {
-      // Replace this with your actual API call to the backend
-      final response = await _simulateBackendLogin(username, password);
 
-      if (response['status'] == 'success') {
-        // Save tokens and user data locally
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('CookieToken', response['token']);
-        await prefs.setString('pToken', response['ptoken']);
+    final prefs = await SharedPreferences.getInstance();
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+
+    try {
+      // Make API call
+      final response = await HttpRequest.post({
+        "endPoint": "/user/login",
+        "username": username,
+        "password": password,
+      });
+
+      // Check if the response is successful
+      if (response.statusCode == 200) {
+        // Parse the response data
+        final Map<String, dynamic> data = json.decode(
+            response.toString()); // Use toString() if body is not available
+        await prefs.setString('CookieToken', data["token"] ?? "");
+        await prefs.setString('pToken', data["ptoken"] ?? "");
         AutoLogin.saveData(username, password);
 
         emit(AuthSuccess()); // Emit success state
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login successful!')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+        );
+      } else if (response.statusCode == 204) {
+        authViewModel.password = password;
+        if (username.contains("@")) {
+          await prefs.setString('email', username);
+          Navigator.pushReplacementNamed(context, '/otp_verification');
+        } else {
+          authViewModel.flag = 2;
+          authViewModel.username = username;
+          Navigator.pushReplacementNamed(context, '/email_verification');
+        }
       } else {
-        // If the backend fails to store data or credentials are invalid
-        emit(AuthFailure(error: response['message']));
+        emit(AuthFailure(error: 'Error: Status Code ${response.statusCode}'));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: Status Code ${response.statusCode}')),
+        );
       }
-    } catch (e) {
-      emit(AuthFailure(error: e.toString())); // Emit failure state with error
-    }
-  }
-
-  // Simulate a backend API call (replace with your actual API call)
-  Future<Map<String, dynamic>> _simulateBackendLogin(
-      String username, String password) async {
-    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
-
-    // Simulate backend response
-    if (username == "validUser" && password == "validPassword") {
-      return {
-        'status': 'success',
-        'token': 'simulated_token',
-        'ptoken': 'simulated_ptoken',
-        'message': 'Login successful',
-      };
-    } else {
-      return {
-        'status': 'error',
-        'message': 'Invalid username or password',
-      };
+    } catch (error) {
+      emit(AuthFailure(
+          error: error.toString())); // Emit failure state with error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $error')),
+      );
     }
   }
 }
@@ -308,35 +323,32 @@ class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
-  loginViewSt createState() => loginViewSt();
+  _LoginViewState createState() => _LoginViewState();
 }
 
-class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
-  final formKey = GlobalKey<FormState>(); // Form key for validation
-  final emailController = TextEditingController(); // Controller for email input
-  final passwordController =
-      TextEditingController(); // Controller for password input
-  late AnimationController
-      animationController; // Animation controller for fade effect
-  late Animation<double> fadeAnimation; // Fade animation
-  bool visiblePassword2 = false; // Toggle password visibility
+class _LoginViewState extends State<LoginView>
+    with SingleTickerProviderStateMixin {
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  late AnimationController animationController;
+  late Animation<double> fadeAnimation;
+  bool visiblePassword2 = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize animation controller and fade animation
     animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
     fadeAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(animationController);
-    animationController.forward(); // Start the animation
+    animationController.forward();
   }
 
   @override
   void dispose() {
-    // Dispose controllers and animation to avoid memory leaks
     animationController.dispose();
     emailController.dispose();
     passwordController.dispose();
@@ -364,14 +376,12 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo or image
                     Image.asset(
                       'assets/login1.png',
                       width: 150,
                       height: 150,
                     ),
                     const SizedBox(height: 32),
-                    // Login title
                     const Text(
                       'Login',
                       style: TextStyle(
@@ -380,7 +390,6 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                           color: Colors.white),
                     ),
                     const SizedBox(height: 32),
-                    // Email input field
                     TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -398,7 +407,6 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Password input field
                     TextFormField(
                       controller: passwordController,
                       obscureText: !visiblePassword2,
@@ -417,8 +425,7 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                           ),
                           onPressed: () {
                             setState(() {
-                              visiblePassword2 =
-                                  !visiblePassword2; // Toggle password visibility
+                              visiblePassword2 = !visiblePassword2;
                             });
                           },
                         ),
@@ -431,21 +438,14 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                       },
                     ),
                     const SizedBox(height: 24),
-                    // Login button wrapped with BlocProvider
                     BlocProvider(
-                      create: (context) =>
-                          AuthCubit(), // Provide AuthCubit instance
+                      create: (context) => AuthCubit(),
                       child: BlocConsumer<AuthCubit, AuthState>(
                         listener: (context, state) {
-                          // Handle state changes
                           if (state is AuthSuccess) {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Login successful!')));
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeView()));
                           } else if (state is AuthFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Error: ${state.error}')));
@@ -453,15 +453,15 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                         },
                         builder: (context, state) {
                           if (state is AuthLoading) {
-                            return const CircularProgressIndicator(); // Show loading indicator
+                            return const CircularProgressIndicator();
                           }
                           return ElevatedButton(
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
-                                // Trigger login function
                                 context.read<AuthCubit>().login(
                                     emailController.text,
-                                    passwordController.text);
+                                    passwordController.text,
+                                    context);
                               }
                             },
                             child: const Text('Sign In'),
@@ -475,7 +475,6 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Forgot password button
                     TextButton(
                       onPressed: () async {
                         final authViewModel =
@@ -494,7 +493,6 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
                           style: TextStyle(color: Colors.white)),
                     ),
                     const SizedBox(height: 16),
-                    // Sign up button
                     TextButton(
                       onPressed: () {
                         Navigator.push(
