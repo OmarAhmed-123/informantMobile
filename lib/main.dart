@@ -80,13 +80,14 @@ class MyAppS extends State<MyApp> {
   }
 }
 */
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'package:no_screenshot/no_screenshot.dart';
 import 'view_models/auth_view_model.dart';
+import 'views/httpCodeG.dart';
 import 'views/register_view.dart';
 import 'views/login_view.dart';
 import 'views/home_view.dart';
@@ -99,22 +100,19 @@ import 'views/otp_verification_view.dart';
 import 'views/otpForForgotPassword.dart';
 import 'views/variables.dart';
 import 'services/api_service.dart';
-import 'views/auth_cubit.dart'
-    as auth_cubit; // Use a prefix to resolve ambiguity
+import 'views/auth_cubit.dart' as auth_cubit;
 
-// Global navigator key to handle navigation outside the widget tree
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   HttpOverrides.global = MyHttpOverrides();
 
-  // Determine the base URL dynamically
-  const bool useLocalServer =
-      false; // Set this to false to use the remote server
+  const bool useLocalServer = false;
   final String baseUrl = useLocalServer
-      // ignore: dead_code
-      ? 'http://localhost:58824' // Local server
-      : 'https://infinitely-native-lamprey.ngrok-free.app'; // Remote server
+      ? 'http://localhost:58824'
+      : 'https://infinitely-native-lamprey.ngrok-free.app';
 
   final apiService = ApiService(baseUrl: baseUrl);
 
@@ -122,11 +120,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        Provider<ApiService>.value(value: apiService), // Provide ApiService
-        BlocProvider(
-          create: (context) =>
-              auth_cubit.AuthCubit(), // Use the prefixed AuthCubit
-        ), // Provide AuthCubit
+        Provider<ApiService>.value(value: apiService),
+        BlocProvider(create: (context) => auth_cubit.AuthCubit()),
       ],
       child: const MyApp(),
     ),
@@ -135,30 +130,31 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
   @override
-  MyAppS createState() => MyAppS();
+  MyAppState createState() => MyAppState();
 }
 
-class MyAppS extends State<MyApp> {
-  final no = NoScreenshot.instance;
+class MyAppState extends State<MyApp> {
+  final NoScreenshot _noScreenshot = NoScreenshot.instance;
 
   @override
   void initState() {
     super.initState();
-    // no.screenshotOff();
+    // _noScreenshot.screenshotOff(); // Uncomment if needed
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey, // Use the single global navigatorKey
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      title: '',
+      title: 'Informat',
       theme: ThemeData(
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/connection',
+      initialRoute: '/login',
       routes: {
         '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),
@@ -166,7 +162,7 @@ class MyAppS extends State<MyApp> {
         '/otp_verification': (context) => const OtpVerificationView(),
         '/otpForForget': (context) => const OtpForForgotPassword(),
         '/home': (context) => BlocProvider(
-              create: (context) => AdsCubit(), // Provide AdsCubit here
+              create: (context) => AdsCubit(),
               child: const HomeView(),
             ),
         '/forgot': (context) => const ForgotPasswordView(),

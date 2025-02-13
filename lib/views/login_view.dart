@@ -230,12 +230,11 @@ class loginViewSt extends State<LoginView> with SingleTickerProviderStateMixin {
 }
 */
 
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, sort_child_properties_last, prefer_const_constructors, depend_on_referenced_packages, body_might_complete_normally_catch_error
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'home_view.dart';
 import 'register_view.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
@@ -243,35 +242,30 @@ import '../view_models/auth_view_model.dart';
 import 'email_verification_view.dart';
 import 'package:provider/provider.dart';
 
-// Cubit for handling authentication logic
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   Future<void> login(
       String username, String password, BuildContext context) async {
-    emit(AuthLoading()); // Emit loading state
+    emit(AuthLoading());
 
     final prefs = await SharedPreferences.getInstance();
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
     try {
-      // Make API call
       final response = await HttpRequest.post({
         "endPoint": "/user/login",
         "username": username,
         "password": password,
       });
 
-      // Check if the response is successful
       if (response.statusCode == 200) {
-        // Parse the response data
-        final Map<String, dynamic> data = json.decode(
-            response.toString()); // Use toString() if body is not available
+        final Map<String, dynamic> data = json.decode(response.toString());
         await prefs.setString('CookieToken', data["token"] ?? "");
         await prefs.setString('pToken', data["ptoken"] ?? "");
         AutoLogin.saveData(username, password);
 
-        emit(AuthSuccess()); // Emit success state
+        emit(AuthSuccess());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login successful!')),
         );
@@ -296,8 +290,7 @@ class AuthCubit extends Cubit<AuthState> {
         );
       }
     } catch (error) {
-      emit(AuthFailure(
-          error: error.toString())); // Emit failure state with error
+      emit(AuthFailure(error: error.toString()));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $error')),
       );
@@ -305,18 +298,17 @@ class AuthCubit extends Cubit<AuthState> {
   }
 }
 
-// Auth State
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {} // Initial state
+class AuthInitial extends AuthState {}
 
-class AuthLoading extends AuthState {} // Loading state
+class AuthLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {} // Success state
+class AuthSuccess extends AuthState {}
 
 class AuthFailure extends AuthState {
   final String error;
-  AuthFailure({required this.error}); // Failure state with error message
+  AuthFailure({required this.error});
 }
 
 class LoginView extends StatefulWidget {

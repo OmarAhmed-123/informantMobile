@@ -36,6 +36,7 @@ dependencies:
   webview_flutter: ^4.8.0
   dartz: ^0.10.1
   path_provider: ^2.0.11 # Add this line
+  internet_connection_checker: ^3.0.1
 
 
 dev_dependencies:

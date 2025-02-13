@@ -91,7 +91,7 @@ class AuthCubit extends Cubit<AuthState> {
       dio.interceptors.add(CookieManager(cookieJar));
 
       final response = await dio.post(
-        'https://infinitely-native-lamprey.ngrok-free.app/forgot-password',
+        'https://infinitely-native-lamprey.ngrok-free.app/forgot',
         data: {'email': email},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -117,7 +117,7 @@ class AuthCubit extends Cubit<AuthState> {
       dio.interceptors.add(CookieManager(cookieJar));
 
       final response = await dio.post(
-        'https://infinitely-native-lamprey.ngrok-free.app/send-otp',
+        'https://infinitely-native-lamprey.ngrok-free.app/sendotp',
         data: {'email': email},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
