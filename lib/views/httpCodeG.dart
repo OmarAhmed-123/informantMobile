@@ -111,19 +111,14 @@ class HttpRequest {
   static late PersistCookieJar cookieJar;
 
   static Future<void> init() async {
-    // Get the directory for storing cookies
     final appDocDir = await getApplicationDocumentsDirectory();
     final cookiePath = join(appDocDir.path, 'cookies');
-
-    // Initialize the cookie jar
     cookieJar = PersistCookieJar(storage: FileStorage(cookiePath));
-
-    // Initialize Dio with the cookie manager
     dio = Dio();
     dio.interceptors.add(CookieManager(cookieJar));
   }
 
-  static Future<Response> post(var internalBody) async {
+  static Future<Response> post(Map<String, dynamic> internalBody) async {
     await init();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = await prefs.getString('CookieToken');
@@ -145,10 +140,8 @@ class HttpRequest {
     try {
       final response =
           await dio.post(url, data: body, options: Options(headers: headers));
-      print("zeft_requestBody ${response.statusCode}");
       return response;
     } catch (e) {
-      print("zeft_Faild:${e.toString()}");
       return Response(
           requestOptions: RequestOptions(path: url),
           statusCode: 600,
@@ -163,6 +156,7 @@ class HttpRequest {
       URL = endPoint;
     else
       URL = Urls[0] + endPoint;
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = await prefs.getString('CookieToken');
     String? ptoken = await prefs.getString('pToken');

@@ -14,7 +14,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   #camera: ^0.11.0
   carousel_slider: ^5.0.0
-  connectivity_plus: ^6.0.1
+  #connectivity_plus: ^6.0.1
   cookie_jar: ^4.0.8
   dio: ^5.7.0
   dio_cookie_manager: ^3.1.1
@@ -36,7 +36,10 @@ dependencies:
   webview_flutter: ^4.8.0
   dartz: ^0.10.1
   path_provider: ^2.0.11 # Add this line
-  internet_connection_checker: ^3.0.1
+  connectivity_plus: 6.1.3
+  internet_connection_checker: 3.0.1
+  flutter_inappwebview: ^5.8.0
+
 
 
 dev_dependencies:
