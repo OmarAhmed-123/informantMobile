@@ -1,34 +1,32 @@
-
 // ignore_for_file: unnecessary_null_comparison
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation___part1/views/auth_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:graduation___part1/views/home_view.dart';
 import 'package:graduation___part1/views/barOfHome.dart';
 
-// Plan model representing different advertising plans
 class Plan {
   final int id;
   final String name;
-  final String description;
+  final String feature;
   final double price;
-  final double NoMonths;
+  final double noMonths;
 
   Plan({
     required this.id,
     required this.name,
-    required this.description,
+    required this.feature,
     required this.price,
-    required this.NoMonths,
+    required this.noMonths,
   });
 }
 
-// Cubit for managing the state of ad creation
 class CreateAdCubit extends Cubit<void> {
   CreateAdCubit() : super(null);
 
@@ -42,7 +40,6 @@ class CreateAdCubit extends Cubit<void> {
     required String link,
   }) async {
     try {
-      // Simulate a network call using Cubit
       final response = await HttpRequest.post({
         "endPoint": "/user/createAd",
         "name": name,
@@ -55,100 +52,66 @@ class CreateAdCubit extends Cubit<void> {
       });
 
       if (response.statusCode == 200) {
-        // Handle successful ad creation
-        emit(null); // Emit a state change if needed
+        emit(null);
       } else {
-        // Handle error
         throw Exception('Failed to create ad');
       }
     } catch (e) {
-      // Handle exceptions
       throw Exception('Error: $e');
     }
   }
 }
 
-// Main widget for creating an ad
 class CreateAdView extends StatefulWidget {
   const CreateAdView({Key? key}) : super(key: key);
 
   @override
-  CreateAdViewS createState() => CreateAdViewS();
+  CreateAdViewState createState() => CreateAdViewState();
 }
 
-class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
+class CreateAdViewState extends State<CreateAdView>
+    with TickerProviderStateMixin {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final linkController = TextEditingController();
   late String imageAd;
 
-  // Media handling
   List<File> mediaFiles = [];
   List<bool> video = [];
   List<VideoPlayerController?> videoControllers = [];
   final ImagePicker pick = ImagePicker();
 
-  // Animation controllers
   late AnimationController animationController;
   late AnimationController planAnimationController;
   late Animation<double> scaleAnimation;
   late Animation<double> planSlideAnimation;
 
-  // Plan selection
   Plan? selectedPlan;
-  final List<Plan> plans = [
-    Plan(
-      id: 0,
-      name: 'Basic Plan',
-      description:
-          'Boost your business with cost-effective advertising by choosing our Basic Plan, which offers a competitive view rate of 0.11% for additional views. Save money while maximizing your reach.\n🔥MONTHES: 1',
-      price: 4500,
-      NoMonths: 1,
-    ),
-    Plan(
-      id: 1,
-      name: 'Growth Accelerator Plan',
-      description:
-          'Growth Accelerator Plan: Maximize Exposure with Indeed and Google Ads Our Growth Accelerator Plan is crafted to significantly expand your reach by leveraging both Indeed and Google Ads. This plan is designed to attract more employers and increase visibility for your ads, offering a competitive rate of 0.13% per 100 views.\n🔥MONTHES: 2',
-      price: 15000,
-      NoMonths: 2,
-    ),
-    Plan(
-      id: 2,
-      name: 'Omni-Channel Growth Mastery Plan',
-      description:
-          'Omni-Channel Growth Mastery Plan: Unlock the Full Potential of Multi-Platform Advertising Our Omni-Channel Growth Mastery Plan is expertly crafted to maximize your brand’s exposure across the most impactful digital advertising platforms. This comprehensive plan strategically targets key touchpoints, ensuring your message reaches the right audience through Google, YouTube, Facebook, Twitter, and other major social media channels. Managed by a team of seasoned freelancers and influencers, this plan offers a highly effective rate of 0.002% per 100 views. \n🔥MONTHES: 3',
-      price: 50000,
-      NoMonths: 3,
-    ),
-  ];
+  List<Plan> plans = [];
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
+    _fetchPlans();
   }
 
   void _initializeAnimations() {
-    // Main animation controller
     animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    // Plan selection animation controller
     planAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
-    // Scale animation for form elements
     scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: animationController, curve: Curves.easeOutBack),
     );
 
-    // Slide animation for plan selection
     planSlideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: planAnimationController, curve: Curves.easeInOut),
     );
@@ -157,7 +120,35 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     planAnimationController.forward();
   }
 
-  // Method to get media (images or videos) from the gallery
+  Future<void> _fetchPlans() async {
+    try {
+      final response = await HttpRequest.post({
+        "endPoint": "/user/plans",
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.toString());
+        if (data['messages']['content'] != null) {
+          setState(() {
+            plans = List<Map<String, dynamic>>.from(data['messages']['content'])
+                .map((plan) => Plan(
+                      id: plan['id'],
+                      name: plan['name'],
+                      feature: plan['feuture'],
+                      price: plan['price'].toDouble(),
+                      noMonths: plan['noMonths'].toDouble(),
+                    ))
+                .toList();
+          });
+        }
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load plans: $error')),
+      );
+    }
+  }
+
   Future<void> getMedia(ImageSource source, {bool isVideo = false}) async {
     final picker = ImagePicker();
     if (isVideo) {
@@ -185,7 +176,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     }
   }
 
-  // Method to initialize video controller
   Future<void> initiVideoController(File videoFile, int index) async {
     final controller = VideoPlayerController.file(videoFile);
     await controller.initialize();
@@ -194,7 +184,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     });
   }
 
-  // Method to pick media (images or videos) from the camera
   Future<void> pickMedia(ImageSource source, {required bool isVideo}) async {
     if (isVideo) {
       final XFile? videoFile = await pick.pickVideo(source: source);
@@ -225,7 +214,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     }
   }
 
-  // Method to ask the user if they want to pick more media
   Future<void> askToPickMore({required bool isVideo}) async {
     final bool? pickMore = await showDialog(
       context: context,
@@ -251,7 +239,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     }
   }
 
-  // Build media preview widget
   Widget buildMediaPreview() {
     return Container(
       height: 200,
@@ -323,7 +310,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Show media selection options
   void showMedia() {
     showDialog(
       context: context,
@@ -366,7 +352,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Show options for media selection from gallery
   void showOptions2() {
     showDialog(
       context: context,
@@ -409,7 +394,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Show options for media selection from camera
   void showOptions() {
     showDialog(
       context: context,
@@ -452,7 +436,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Build media option widget
   Widget buildMediaOption({
     required IconData icon,
     required String title,
@@ -487,7 +470,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Build plan selector widget
   Widget _buildPlanSelector() {
     return AnimatedBuilder(
       animation: planAnimationController,
@@ -520,7 +502,6 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
     );
   }
 
-  // Build plan card widget
   Widget _buildPlanCard(Plan plan) {
     final isSelected = selectedPlan?.id == plan.id;
 
@@ -577,7 +558,7 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
             ),
             const SizedBox(height: 8),
             Text(
-              plan.description,
+              plan.feature,
               style: TextStyle(
                 color: isSelected ? Colors.white70 : Colors.grey[500],
                 fontSize: 14,
@@ -723,16 +704,15 @@ class CreateAdViewS extends State<CreateAdView> with TickerProviderStateMixin {
 
   Future<void> _createAd() async {
     if (formKey.currentState!.validate() && selectedPlan != null) {
-      final cubit = context.read<CreateAdCubit>();
-      await cubit.createAd(
-        name: nameController.text,
-        details: descriptionController.text,
-        imageName: "1.jpeg",
-        images: imageAd,
-        planNum: selectedPlan!.id,
-        setToPublic: false,
-        link: linkController.text,
-      );
+      context.read<AuthCubit>().createAd(
+            name: nameController.text,
+            details: descriptionController.text,
+            imageName: "1.jpeg",
+            images: imageAd,
+            planNum: selectedPlan!.id,
+            setToPublic: false,
+            link: linkController.text,
+          );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
