@@ -56,7 +56,7 @@ class ChatService {
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-          'https://infinitely-native-lamprey.ngrok-free.app/chatHub',
+          'https://infinitely-native-lamprey.ngrok-free.app/chat',
           HttpConnectionOptions(
             accessTokenFactory: () async => token ?? '',
             transport: HttpTransportType

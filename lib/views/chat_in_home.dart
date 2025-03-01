@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation___part1/views/profile.dart';
@@ -179,7 +180,7 @@ class ChatWindow extends StatelessWidget {
       ),
     );
   }
-
+/*
   Widget _buildMessageList() {
     return BlocBuilder<ChatCubit, List<ChatMessage>>(
       builder: (context, messages) {
@@ -198,7 +199,7 @@ class ChatWindow extends StatelessWidget {
       },
     );
   }
-
+*/
   Widget _buildMessageInput() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -279,3 +280,4 @@ class ChatBubble extends StatelessWidget {
     );
   }
 }
+*/
