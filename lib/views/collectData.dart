@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:graduation___part1/views/profile.dart';
 import 'package:graduation___part1/views/home_view.dart';
 import 'package:graduation___part1/views/barOfHome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'editProfile.dart';
 
 class collectData extends StatefulWidget {
   const collectData({Key? key}) : super(key: key);
@@ -23,7 +25,7 @@ class CollectDataState extends State<collectData> {
   final TextEditingController profileLinkController = TextEditingController();
   final TextEditingController aboutController = TextEditingController();
   final TextEditingController skillsController = TextEditingController();
-
+  var base64Image;
   File? selectedImage;
   final ImagePicker pick = ImagePicker();
 
@@ -74,44 +76,124 @@ class CollectDataState extends State<collectData> {
     );
   }
 
+  // Future<void> saveProfile() async {
+  //   if (formKey.currentState!.validate()) {
+  //     SharedPreferences objShared = await SharedPreferences.getInstance();
+
+  //     // Save required fields
+  //     await objShared.setString('linkedin', linkedInController.text.trim());
+  //     await objShared.setInt(
+  //         'experience_years', int.parse(experienceController.text.trim()));
+
+  //     // Save optional fields
+  //     await objShared.setString(
+  //         'phone',
+  //         phoneController.text.trim().isNotEmpty
+  //             ? phoneController.text.trim()
+  //             : "null");
+  //     await objShared.setString(
+  //         'email',
+  //         emailController.text.trim().isNotEmpty
+  //             ? emailController.text.trim()
+  //             : "null");
+  //     await objShared.setString(
+  //         'profile_link',
+  //         profileLinkController.text.trim().isNotEmpty
+  //             ? profileLinkController.text.trim()
+  //             : "null");
+  //     await objShared.setString('about', aboutController.text.trim());
+  //     await objShared.setString('skills', skillsController.text.trim());
+
+  //     // Save image as Base64 string
+  //     if (selectedImage != null) {
+  //       final bytes = await selectedImage!.readAsBytes();
+  //       base64Image = base64Encode(bytes);
+  //       await objShared.setString('profile_image', base64Image);
+  //     }
+
+  //     Profile profile = Profile(
+  //       name: objShared.getString('username')!,
+  //       imageUrl: base64Image,
+  //       about: aboutController.text.trim(),
+  //       skills: skillsController.text.trim(),
+  //       linkedin: linkedInController.text.trim(),
+  //       email: objShared.getString('email')!,
+  //       phone: phoneController.text.trim(),
+  //       numOfEx: int.parse(experienceController.text.trim()),
+  //     );
+
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => const ProfilePage(profile: profile)),
+  //     );
+  //   }
+  // }
+
   Future<void> saveProfile() async {
     if (formKey.currentState!.validate()) {
       SharedPreferences objShared = await SharedPreferences.getInstance();
 
       // Save required fields
+
       await objShared.setString('linkedin', linkedInController.text.trim());
+
       await objShared.setInt(
           'experience_years', int.parse(experienceController.text.trim()));
 
       // Save optional fields
+
       await objShared.setString(
           'phone',
           phoneController.text.trim().isNotEmpty
               ? phoneController.text.trim()
               : "null");
+
       await objShared.setString(
           'email',
           emailController.text.trim().isNotEmpty
               ? emailController.text.trim()
               : "null");
+
       await objShared.setString(
           'profile_link',
           profileLinkController.text.trim().isNotEmpty
               ? profileLinkController.text.trim()
               : "null");
+
       await objShared.setString('about', aboutController.text.trim());
+
       await objShared.setString('skills', skillsController.text.trim());
 
       // Save image as Base64 string
+
+      // String? base64Image;
+
       if (selectedImage != null) {
         final bytes = await selectedImage!.readAsBytes();
-        final base64Image = base64Encode(bytes);
+
+        base64Image = base64Encode(bytes);
+
         await objShared.setString('profile_image', base64Image);
       }
 
+      // Create a Profile object with the saved data
+
+      final profile = Profile(
+        name: objShared.getString('username') ?? "NULL",
+        imageUrl: objShared.getString('profile_image') ?? "NULL",
+        about: objShared.getString('about') ?? "NULL",
+        skills: objShared.getString('skills') ?? "NULL",
+        linkedin: objShared.getString('linkedin') ?? "NULL",
+        email: objShared.getString('email') ?? "NULL",
+        phone: objShared.getString('phone') ?? "NULL",
+        numOfEx: objShared.getInt('experience_years') ?? 0,
+      );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ProfilePage()),
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(profile: profile),
+        ),
       );
     }
   }

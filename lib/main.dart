@@ -154,7 +154,7 @@ class MyAppState extends State<MyApp> {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
         '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),

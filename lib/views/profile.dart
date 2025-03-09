@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:graduation___part1/views/chat_cubit.dart';
+
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:graduation___part1/views/collectData.dart';
+
 import 'package:graduation___part1/views/home_view.dart';
+
 import 'chat_service.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+import 'editProfile.dart';
 import 'chat_window.dart';
+import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  final Profile profile;
+
+  const ProfilePage({Key? key, required this.profile}) : super(key: key);
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -18,60 +30,9 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
-  String? about;
-  String? username;
-  String? skills;
-  ImageProvider? profileImage;
   int selectedTab = 0;
-  String? linkedin;
-  int? numOfEx;
-  String? email;
-  String? phone;
-  String? profile;
+
   bool _isChatVisible = false;
-
-  // Define currentUser and handleLogout
-  final ChatUser currentUser = ChatUser(
-    userId: 'currentUserId', // Replace with actual user ID
-    username: 'Current User', // Replace with actual username
-    profileImage: null,
-    isOnline: true,
-  );
-
-  void handleLogout() {
-    // Implement logout logic here
-    print('User logged out');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getProfileData();
-  }
-
-  Future<void> getProfileData() async {
-    SharedPreferences objShared = await SharedPreferences.getInstance();
-
-    setState(() {
-      about = objShared.getString('about');
-      skills = objShared.getString('skills');
-      username = objShared.getString('username');
-      final base64Image = objShared.getString('profile_image');
-
-      email = objShared.getString('email');
-      linkedin = objShared.getString('linkedin');
-      profile = objShared.getString('profile_link');
-      phone = objShared.getString('phone');
-      numOfEx = objShared.getInt('experience_years');
-
-      if (base64Image != null) {
-        final bytes = base64Decode(base64Image);
-        profileImage = MemoryImage(bytes);
-      } else {
-        profileImage = const AssetImage('assets/default_avatar.png');
-      }
-    });
-  }
 
   void _toggleChat() {
     setState(() {
@@ -87,25 +48,11 @@ class ProfilePageState extends State<ProfilePage>
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.home, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeView()),
-            );
+            Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const collectData()),
-              );
-            },
-          ),
-        ],
       ),
       body: Stack(
         children: [
@@ -143,13 +90,14 @@ class ProfilePageState extends State<ProfilePage>
                         child: CircleAvatar(
                           radius: 60,
                           backgroundColor: Colors.grey[800],
-                          backgroundImage: profileImage,
+                          backgroundImage:
+                              NetworkImage(widget.profile.imageUrl),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      username ?? "Username",
+                      widget.profile.name,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -202,13 +150,14 @@ class ProfilePageState extends State<ProfilePage>
               bottom: 0,
               left: 0,
               right: 0,
-              child: BlocProvider(
-                create: (context) => ChatCubit(ChatService()),
-                child: ChatApp(
-                  username: currentUser.username,
-                  userId: currentUser.userId,
-                  onLogout: handleLogout,
-                ),
+              child: ChatWindow(
+                onClose: _toggleChat,
+                onCall: () {
+                  if (widget.profile.phone != null) {
+                    _makePhoneCall(widget.profile.phone!);
+                  }
+                },
+                username: widget.profile.name,
               ),
             ),
         ],
@@ -221,6 +170,7 @@ class ProfilePageState extends State<ProfilePage>
       scheme: 'tel',
       path: phoneNumber,
     );
+
     await launchUrl(launchUri);
   }
 
@@ -240,7 +190,7 @@ class ProfilePageState extends State<ProfilePage>
             ),
             const SizedBox(height: 10),
             Text(
-              about ?? "No information provided.",
+              widget.profile.about,
               textAlign: TextAlign.justify,
               style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
@@ -255,18 +205,19 @@ class ProfilePageState extends State<ProfilePage>
             ),
             const SizedBox(height: 10),
             Text(
-              skills ?? "No skills added.",
+              widget.profile.skills,
               textAlign: TextAlign.justify,
               style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
             const SizedBox(height: 20),
-            _buildInfoSection("LinkedIn Link", linkedin),
-            _buildInfoSection("Years of Experience", numOfEx?.toString()),
-            _buildInfoSection("Email", email),
-            _buildInfoSection("Phone", phone),
-            _buildInfoSection("Profile Link", profile),
+            _buildInfoSection("LinkedIn Link", widget.profile.linkedin),
+            _buildInfoSection(
+                "Years of Experience", widget.profile.numOfEx.toString()),
+            _buildInfoSection("Email", widget.profile.email),
+            _buildInfoSection("Phone", widget.profile.phone),
           ],
         );
+
       case 1:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,6 +237,7 @@ class ProfilePageState extends State<ProfilePage>
             ),
           ],
         );
+
       case 2:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,6 +257,7 @@ class ProfilePageState extends State<ProfilePage>
             ),
           ],
         );
+
       default:
         return Container();
     }
@@ -335,6 +288,7 @@ class ProfilePageState extends State<ProfilePage>
 
   Widget _buildTabButton(int index, IconData icon, String label) {
     final isSelected = selectedTab == index;
+
     return Column(
       children: [
         IconButton(

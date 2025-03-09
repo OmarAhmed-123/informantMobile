@@ -11,6 +11,8 @@ import 'package:graduation___part1/views/profile.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:graduation___part1/views/login_view.dart';
 import 'package:signalr_core/signalr_core.dart'; // Import SignalR package
+import 'package:shared_preferences/shared_preferences.dart';
+import 'editProfile.dart';
 
 class HomeView1 extends StatefulWidget {
   const HomeView1({super.key});
@@ -156,11 +158,26 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
                 color: Colors.transparent,
                 child: IconButton(
                   icon: const Icon(Icons.person, color: Colors.white),
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    SharedPreferences objShared =
+                        await SharedPreferences.getInstance();
+                    final profile = Profile(
+                      name: objShared.getString('username') ??
+                          "NULL", // Replace with actual name if available
+                      imageUrl: objShared.getString('profile_image') ??
+                          "NULL", // Fallback image URL
+                      about: objShared.getString('about') ?? "NULL",
+                      skills: objShared.getString('skills') ?? "NULL",
+                      linkedin: objShared.getString('linkedin') ?? "NULL",
+                      email: objShared.getString('email') ?? "NULL",
+                      phone: objShared.getString('phone') ?? "NULL",
+                      numOfEx: objShared.getInt('experience_years') ?? 0,
+                    );
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ProfilePage()),
+                        builder: (context) => ProfilePage(profile: profile),
+                      ),
                     );
                   },
                 ),
@@ -221,11 +238,7 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
                     _buildAnimatedCard(
                         1, 'Create Ad', 'Create your own ad', Icons.add_circle,
                         () {
-                      _navigateWithAnimation(
-                          context,
-                          const CreateAdView(
-                            
-                          ));
+                      _navigateWithAnimation(context, const CreateAdView());
                     }),
                     _buildAnimatedCard(2, 'My Profile', '', Icons.person, () {
                       _navigateWithAnimation(context, const AutoProfile());

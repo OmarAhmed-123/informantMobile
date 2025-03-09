@@ -631,10 +631,12 @@ class homeView extends State<HomeView> {
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:graduation___part1/views/profile.dart';
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:graduation___part1/views/variables.dart';
 import 'package:graduation___part1/views/barOfHome.dart';
+import 'package:graduation___part1/views/editProfile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -873,6 +875,51 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  Widget getProfiles() {
+    return SizedBox(
+      height: 120, // Fixed height for the horizontal list
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(16.0),
+        itemCount: fakeProfiles.length,
+        itemBuilder: (context, index) {
+          final profile = fakeProfiles[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(profile: profile),
+                ),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 16.0),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.grey[800],
+                    backgroundImage: NetworkImage(profile.imageUrl),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    profile.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget verticalList() {
     return SizedBox(
       height: 400,
@@ -941,6 +988,8 @@ class _HomeViewState extends State<HomeView> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              getProfiles(),
+              const SizedBox(height: 5),
               if (_isDioInitialized) ...[
                 horizontalList(MediaQuery.of(context).size.width, 400, 190),
                 const SizedBox(height: 5),

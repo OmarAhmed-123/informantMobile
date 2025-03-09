@@ -27,41 +27,6 @@ class Plan {
   });
 }
 
-class CreateAdCubit extends Cubit<void> {
-  CreateAdCubit() : super(null);
-
-  Future<void> createAd({
-    required String name,
-    required String details,
-    required String imageName,
-    required String images,
-    required int planNum,
-    required bool setToPublic,
-    required String link,
-  }) async {
-    try {
-      final response = await HttpRequest.post({
-        "endPoint": "/user/createAd",
-        "name": name,
-        "details": details,
-        "imageName": imageName,
-        "images": images,
-        "planNum": planNum,
-        "setToPublic": setToPublic,
-        "link": link,
-      });
-
-      if (response.statusCode == 200) {
-        emit(null);
-      } else {
-        throw Exception('Failed to create ad');
-      }
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-}
-
 class CreateAdView extends StatefulWidget {
   const CreateAdView({Key? key}) : super(key: key);
 
@@ -573,7 +538,7 @@ class CreateAdViewState extends State<CreateAdView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CreateAdCubit(),
+      create: (context) => AuthCubit(),
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -705,21 +670,14 @@ class CreateAdViewState extends State<CreateAdView>
   Future<void> _createAd() async {
     if (formKey.currentState!.validate() && selectedPlan != null) {
       context.read<AuthCubit>().createAd(
-            name: nameController.text,
-            details: descriptionController.text,
-            imageName: "1.jpeg",
-            images: imageAd,
-            planNum: selectedPlan!.id,
-            setToPublic: false,
-            link: linkController.text,
-          );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ad created successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+          name: nameController.text,
+          details: descriptionController.text,
+          imageName: "1.jpeg",
+          images: imageAd,
+          planNum: selectedPlan!.id,
+          setToPublic: false,
+          link: linkController.text,
+          context: context);
       Navigator.pop(context);
     } else if (selectedPlan == null) {
       ScaffoldMessenger.of(context).showSnackBar(

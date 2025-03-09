@@ -382,6 +382,7 @@ class AuthFailure extends AuthState {
 
 */
 
+import 'package:graduation___part1/views/PaymentPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -432,9 +433,13 @@ class AuthCubit extends Cubit<AuthState> {
     required int planNum,
     required bool setToPublic,
     required String link,
+    required BuildContext context, // Pass context explicitly
   }) async {
+    emit(AuthLoading()); // Emit loading state
+
     try {
       final Dio dio = await getDio();
+
       final response = await dio.post(
         'https://infinitely-native-lamprey.ngrok-free.app/user/createAd',
         data: {
@@ -448,15 +453,35 @@ class AuthCubit extends Cubit<AuthState> {
         },
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
+
       if (response.statusCode == 200) {
-        print('Ad creation is done');
-        emit(AuthSuccess());
+        final Map<String, dynamic> data = json.decode(response.toString());
+
+        if (data['messages']['content']['value'] != null) {
+          final String payUrl = data['messages']['content']['value']['payUrl'];
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PaymentPage(url: payUrl),
+            ),
+          );
+        } else {
+          throw Exception('Invalid response structure');
+        }
+
+        emit(AuthSuccess()); // Emit success state
       } else {
-        throw Exception('Failed to create ad');
+        throw Exception('Failed to create ad: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions
-      throw Exception('Error: $e');
+      emit(AuthFailure(error: 'Error: $e')); // Emit failure state
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to create ad: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -526,6 +551,7 @@ class AuthCubit extends Cubit<AuthState> {
         final Map<String, dynamic> data = response.data;
         await prefs.setString('Token', data["token"] ?? "");
         await prefs.setString('pToken', data["ptoken"] ?? "");
+        await prefs.setString('username1', username);
         AutoLogin.saveData(username, password);
         emit(AuthSuccess());
         ScaffoldMessenger.of(context).showSnackBar(
@@ -585,6 +611,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 204) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('email', email);
+        await prefs.setString('username1', username);
         emit(AuthSuccess());
       } else {
         emit(AuthFailure(error: 'Registration failed: ${response.statusCode}'));
