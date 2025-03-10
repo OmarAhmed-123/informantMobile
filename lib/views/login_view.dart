@@ -456,12 +456,12 @@ class _LoginViewState extends State<LoginView>
                                     context);
                               }
                             },
-                            child: const Text('Sign In'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 50, vertical: 15),
                             ),
+                            child: const Text('Sign In'),
                           );
                         },
                       ),
@@ -490,7 +490,7 @@ class _LoginViewState extends State<LoginView>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RegisterView()),
+                              builder: (context) => const RegisterView()),
                         );
                       },
                       child: const Text("Don't have an account? Sign up",

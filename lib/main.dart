@@ -110,7 +110,7 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   const bool useLocalServer = false;
-  final String baseUrl = useLocalServer
+  const String baseUrl = useLocalServer
       ? 'http://localhost:58824'
       : 'https://infinitely-native-lamprey.ngrok-free.app';
 
@@ -129,7 +129,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   MyAppState createState() => MyAppState();

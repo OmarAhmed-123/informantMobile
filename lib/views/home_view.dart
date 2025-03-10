@@ -656,7 +656,7 @@ class _HomeViewState extends State<HomeView> {
   int currentIndexInV = 0;
   bool showSearch = false;
 
-  List<Map<String, dynamic>> _ads = [];
+  final List<Map<String, dynamic>> _ads = [];
   late Dio dio;
   late PersistCookieJar cookieJar;
   bool _isDioInitialized = false;

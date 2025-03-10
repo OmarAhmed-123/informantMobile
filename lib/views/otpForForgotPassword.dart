@@ -180,7 +180,7 @@ import '../view_models/auth_view_model.dart';
 import 'auth_cubit.dart'; // Import the AuthCubit
 
 class OtpForForgotPassword extends StatefulWidget {
-  const OtpForForgotPassword({Key? key}) : super(key: key);
+  const OtpForForgotPassword({super.key});
   @override
   otpVerificationViewS createState() => otpVerificationViewS();
 }
@@ -342,7 +342,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final response = await HttpRequest.post({
-        "endPoint": "/user/sendotp?email=${email}",
+        "endPoint": "/user/sendotp?email=$email",
       });
 
       if (response.statusCode == 200) {

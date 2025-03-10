@@ -121,8 +121,8 @@ class HttpRequest {
   static Future<Response> post(Map<String, dynamic> internalBody) async {
     await init();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = await prefs.getString('CookieToken');
-    String? ptoken = await prefs.getString('pToken');
+    String? token = prefs.getString('CookieToken');
+    String? ptoken = prefs.getString('pToken');
     final url = Urls[0] + internalBody['endPoint'];
     var headers = {
       "Content-Type": "application/json",
@@ -152,14 +152,15 @@ class HttpRequest {
   static Future<Response> get(String endPoint) async {
     await init();
     var URL = '';
-    if (endPoint.indexOf("http") == 0)
+    if (endPoint.indexOf("http") == 0) {
       URL = endPoint;
-    else
+    } else {
       URL = Urls[0] + endPoint;
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = await prefs.getString('CookieToken');
-    String? ptoken = await prefs.getString('pToken');
+    String? token = prefs.getString('CookieToken');
+    String? ptoken = prefs.getString('pToken');
     var headers = {
       "Content-Type": "application/json",
       'ngrok-skip-browser-warning': 'true',

@@ -272,8 +272,8 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
                   _isChatbotVisible = !_isChatbotVisible;
                 });
               },
-              child: const Icon(Icons.chat_outlined),
               backgroundColor: Colors.blue.shade900,
+              child: const Icon(Icons.chat_outlined),
             ),
           ),
         ],
@@ -303,7 +303,7 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.blue.shade900,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15),
               ),
@@ -363,7 +363,7 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(15),
                 bottomRight: Radius.circular(15),
               ),

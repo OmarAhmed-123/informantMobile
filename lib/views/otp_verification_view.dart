@@ -348,7 +348,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading()); // Emit loading state
     try {
       final response = await HttpRequest.post({
-        "endPoint": "/user/sendotp?email=${email}",
+        "endPoint": "/user/sendotp?email=$email",
       });
 
       if (response.statusCode == 200) {

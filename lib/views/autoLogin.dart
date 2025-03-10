@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
 
 class AutoLogin extends StatelessWidget {
-  const AutoLogin({Key? key}) : super(key: key);
+  const AutoLogin({super.key});
 
   LocalAuthentication get auth => LocalAuthentication();
 
@@ -111,7 +111,7 @@ class AutoLogin extends StatelessWidget {
                               Container(
                                 width: 60,
                                 height: 60,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   image: DecorationImage(
                                     image: AssetImage(
                                         'assets/informant.jpeg'), // Your image path
@@ -136,7 +136,7 @@ class AutoLogin extends StatelessWidget {
                         ),
                         const SizedBox(height: 40),
                         const Spacer(),
-                        Center(
+                        const Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -149,7 +149,7 @@ class AutoLogin extends StatelessWidget {
                                     size: 80,
                                     color: Colors.red,
                                   ),
-                                  const SizedBox(width: 20),
+                                  SizedBox(width: 20),
                                   Icon(
                                     Icons.fingerprint,
                                     size: 80,
@@ -157,9 +157,9 @@ class AutoLogin extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 20),
                               // Title
-                              const Text(
+                              Text(
                                 'Verification needed',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -168,9 +168,9 @@ class AutoLogin extends StatelessWidget {
                                   color: Colors.deepPurple,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10),
                               // Description
-                              const Text(
+                              Text(
                                 'We were unable to verify your Face ID or Fingerprint.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

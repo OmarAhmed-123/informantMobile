@@ -238,6 +238,8 @@ import 'auth_cubit.dart';
 import 'create_ad_view.dart'; // Import the CreateAdView to access ad data
 
 class MyAdsPage extends StatefulWidget {
+  const MyAdsPage({super.key});
+
   @override
   _MyAdsPageState createState() => _MyAdsPageState();
 }

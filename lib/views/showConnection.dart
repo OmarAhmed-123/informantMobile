@@ -123,7 +123,7 @@ import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/connection.dart';
 
 class ShowConnection extends StatefulWidget {
-  const ShowConnection({Key? key}) : super(key: key);
+  const ShowConnection({super.key});
 
   @override
   ShowConnectionState createState() => ShowConnectionState();
@@ -274,13 +274,13 @@ class ShowConnectionState extends State<ShowConnection>
                             ),
                           ],
                         ),
-                        child: CircleAvatar(
+                        child: const CircleAvatar(
                           radius: 122,
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: 120,
                             backgroundImage:
-                                const AssetImage('assets/internet.jpeg'),
+                                AssetImage('assets/internet.jpeg'),
                             backgroundColor: Colors.transparent,
                           ),
                         ),

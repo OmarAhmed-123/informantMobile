@@ -333,7 +333,7 @@ import 'package:graduation___part1/views/barOfHome.dart';
 import 'package:graduation___part1/views/variables.dart';
 
 class ProfitView extends StatefulWidget {
-  const ProfitView({Key? key}) : super(key: key);
+  const ProfitView({super.key});
 
   @override
   profitViewS createState() => profitViewS();
@@ -436,7 +436,7 @@ class profitViewS extends State<ProfitView>
             drawVerticalLine: false,
             horizontalInterval: 200,
             getDrawingHorizontalLine: (value) {
-              return FlLine(
+              return const FlLine(
                 color: Colors.white10,
                 strokeWidth: 1,
               );
@@ -444,15 +444,15 @@ class profitViewS extends State<ProfitView>
           ),
           titlesData: FlTitlesData(
             show: true,
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   return Text(
                     '\$${value.toInt()}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 12,
                     ),
@@ -528,11 +528,11 @@ class profitViewS extends State<ProfitView>
                     ],
                   ),
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 8,
-                      offset: const Offset(0, 4),
+                      offset: Offset(0, 4),
                     ),
                   ],
                 ),
@@ -559,7 +559,7 @@ class profitViewS extends State<ProfitView>
                         children: List.generate(
                           ad['stars'] as int,
                           (index) =>
-                              Icon(Icons.star, color: Colors.amber, size: 14),
+                              const Icon(Icons.star, color: Colors.amber, size: 14),
                         ),
                       ),
                       const SizedBox(height: 4),

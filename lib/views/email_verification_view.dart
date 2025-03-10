@@ -134,7 +134,6 @@ class emailVerificationViewS extends State<EmailVerificationView> {
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +142,7 @@ import '../view_models/auth_view_model.dart';
 import 'auth_cubit.dart' as auth_cubit;
 
 class EmailVerificationView extends StatefulWidget {
-  const EmailVerificationView({Key? key}) : super(key: key);
+  const EmailVerificationView({super.key});
 
   @override
   EmailVerificationViewState createState() => EmailVerificationViewState();

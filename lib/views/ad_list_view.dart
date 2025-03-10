@@ -470,7 +470,7 @@ import 'package:graduation___part1/views/home_view.dart';
 import 'package:graduation___part1/views/barOfHome.dart';
 
 class AdListView extends StatefulWidget {
-  const AdListView({Key? key}) : super(key: key);
+  const AdListView({super.key});
 
   @override
   AdListViewS createState() => AdListViewS();

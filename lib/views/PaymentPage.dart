@@ -75,7 +75,7 @@ import 'package:graduation___part1/views/MyAdsPage.dart';
 
 class PaymentPage extends StatefulWidget {
   final String url; // Add a url parameter to the constructor
-  const PaymentPage({Key? key, required this.url}) : super(key: key);
+  const PaymentPage({super.key, required this.url});
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
@@ -91,7 +91,7 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Complete Payment'),
+        title: const Text('Complete Payment'),
       ),
       body: Column(
         children: [
@@ -101,27 +101,27 @@ class _PaymentPageState extends State<PaymentPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.error_outline,
                           color: Colors.red,
                           size: 48,
                         ),
-                        SizedBox(height: 16),
-                        Text(
+                        const SizedBox(height: 16),
+                        const Text(
                           'Failed to load payment page. Please try again.',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.red,
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
                               hasError = false; // Reset error state
                             });
                           },
-                          child: Text('Retry'),
+                          child: const Text('Retry'),
                         ),
                       ],
                     ),
@@ -151,23 +151,23 @@ class _PaymentPageState extends State<PaymentPage> {
             padding: const EdgeInsets.all(16.0),
             child: AnimatedOpacity(
               opacity: isPaymentCompleted ? 1.0 : 0.5,
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               child: ElevatedButton(
                 onPressed: isPaymentCompleted
                     ? () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => MyAdsPage()),
+                          MaterialPageRoute(builder: (context) => const MyAdsPage()),
                         );
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Proceed to My Ads',
                   style: TextStyle(fontSize: 18),
                 ),

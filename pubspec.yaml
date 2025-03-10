@@ -45,6 +45,8 @@ dependencies:
   webrtc_interface: ^1.1.0 # Downgraded to a compatible version
   permission_handler: ^11.3.1
 
+  path: any
+  avatar_glow: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

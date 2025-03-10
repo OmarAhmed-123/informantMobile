@@ -28,7 +28,7 @@ class Plan {
 }
 
 class CreateAdView extends StatefulWidget {
-  const CreateAdView({Key? key}) : super(key: key);
+  const CreateAdView({super.key});
 
   @override
   CreateAdViewState createState() => CreateAdViewState();
@@ -205,7 +205,7 @@ class CreateAdViewState extends State<CreateAdView>
   }
 
   Widget buildMediaPreview() {
-    return Container(
+    return SizedBox(
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -457,7 +457,7 @@ class CreateAdViewState extends State<CreateAdView>
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ...plans.map((plan) => _buildPlanCard(plan)).toList(),
+                  ...plans.map((plan) => _buildPlanCard(plan)),
                 ],
               ),
             ),

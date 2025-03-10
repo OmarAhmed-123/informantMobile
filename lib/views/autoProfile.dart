@@ -65,19 +65,19 @@ import 'package:graduation___part1/views/profile.dart'; // Import your ProfileDe
 import 'package:graduation___part1/views/editProfile.dart'; // Import your EditProfilePage
 
 class AutoProfile extends StatelessWidget {
-  const AutoProfile({Key? key}) : super(key: key);
+  const AutoProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const CheckUserStatus(),
+      home: CheckUserStatus(),
     );
   }
 }
 
 class CheckUserStatus extends StatelessWidget {
-  const CheckUserStatus({Key? key}) : super(key: key);
+  const CheckUserStatus({super.key});
 
   Future<Profile?> getProfileData() async {
     SharedPreferences objShared = await SharedPreferences.getInstance();

@@ -17,12 +17,11 @@ import 'chat_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'editProfile.dart';
 import 'chat_window.dart';
-import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   final Profile profile;
 
-  const ProfilePage({Key? key, required this.profile}) : super(key: key);
+  const ProfilePage({super.key, required this.profile});
 
   @override
   ProfilePageState createState() => ProfilePageState();
@@ -153,10 +152,8 @@ class ProfilePageState extends State<ProfilePage>
               child: ChatWindow(
                 onClose: _toggleChat,
                 onCall: () {
-                  if (widget.profile.phone != null) {
-                    _makePhoneCall(widget.profile.phone!);
-                  }
-                },
+                  _makePhoneCall(widget.profile.phone);
+                                },
                 username: widget.profile.name,
               ),
             ),
@@ -219,10 +216,10 @@ class ProfilePageState extends State<ProfilePage>
         );
 
       case 1:
-        return Column(
+        return const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "Rates",
               style: TextStyle(
                 fontSize: 18,
@@ -230,8 +227,8 @@ class ProfilePageState extends State<ProfilePage>
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 10),
-            const Text(
+            SizedBox(height: 10),
+            Text(
               "⭐️⭐️⭐️⭐️⭐️ - Excellent, very professional and punctual.",
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
@@ -239,10 +236,10 @@ class ProfilePageState extends State<ProfilePage>
         );
 
       case 2:
-        return Column(
+        return const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "My Works",
               style: TextStyle(
                 fontSize: 18,
@@ -250,8 +247,8 @@ class ProfilePageState extends State<ProfilePage>
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 10),
-            const Text(
+            SizedBox(height: 10),
+            Text(
               "You can add photos or samples of your previous work here.",
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),

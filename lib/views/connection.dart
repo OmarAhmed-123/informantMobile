@@ -63,7 +63,7 @@ import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:graduation___part1/views/showConnection.dart';
 
 class Connection extends StatefulWidget {
-  const Connection({Key? key}) : super(key: key);
+  const Connection({super.key});
 
   @override
   ConnectionS createState() => ConnectionS();
@@ -107,7 +107,7 @@ class ConnectionS extends State<Connection> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(),
     );
   }

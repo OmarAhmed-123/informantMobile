@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'editProfile.dart';
 
 class collectData extends StatefulWidget {
-  const collectData({Key? key}) : super(key: key);
+  const collectData({super.key});
 
   @override
   CollectDataState createState() => CollectDataState();
@@ -260,30 +260,32 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: linkedInController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   decoration: InputDecoration(
                     labelText: "LinkedIn URL (required)",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return "LinkedIn URL is required";
-                    if (!isCorrectLink(value))
+                    }
+                    if (!isCorrectLink(value)) {
                       return "Enter a valid LinkedIn URL";
+                    }
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: experienceController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: "Years of Experience (required)",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -301,11 +303,11 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: phoneController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     labelText: "Phone Number (optional)",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -314,11 +316,11 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: emailController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email (optional)",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -327,10 +329,10 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: profileLinkController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   decoration: InputDecoration(
                     labelText: "Profile Link (optional)",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -339,11 +341,11 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: aboutController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   maxLines: 5,
                   decoration: InputDecoration(
                     labelText: "About You",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -355,11 +357,11 @@ class CollectDataState extends State<collectData> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: skillsController,
-                  style: TextStyle(color: Color(0xff47cb42)),
+                  style: const TextStyle(color: Color(0xff47cb42)),
                   maxLines: 5,
                   decoration: InputDecoration(
                     labelText: "Your Skills",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
