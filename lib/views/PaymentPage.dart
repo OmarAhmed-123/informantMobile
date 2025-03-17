@@ -69,23 +69,23 @@
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:graduation___part1/views/MyAdsPage.dart';
 
 class PaymentPage extends StatefulWidget {
-  final String url; // Add a url parameter to the constructor
+  final String url; // URL for the payment page
   const PaymentPage({super.key, required this.url});
+
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  bool isPaymentCompleted = false;
-
+  bool isPaymentCompleted = false; // Track if payment is completed
   bool hasError = false; // Track if there's an error
-
-  InAppWebViewController? _webViewController;
+  InAppWebViewController? _webViewController; // Controller for the web view
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +95,7 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       body: Column(
         children: [
+          // WebView to load the payment page
           Expanded(
             child: hasError
                 ? Center(
@@ -127,11 +128,13 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                   )
                 : InAppWebView(
-                    initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
+                    initialUrlRequest: URLRequest(
+                        url: WebUri(widget.url)), // Changed Uri.parse to WebUri
                     onWebViewCreated: (controller) {
                       _webViewController = controller;
                     },
                     onLoadStop: (controller, url) async {
+                      // Check if the payment is completed
                       if (url.toString().contains("payment-success")) {
                         setState(() {
                           isPaymentCompleted = true;
@@ -140,13 +143,13 @@ class _PaymentPageState extends State<PaymentPage> {
                     },
                     onLoadError: (controller, url, code, message) {
                       // Handle loading errors
-
                       setState(() {
                         hasError = true;
                       });
                     },
                   ),
           ),
+          // Button to proceed to My Ads page
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AnimatedOpacity(
@@ -157,12 +160,14 @@ class _PaymentPageState extends State<PaymentPage> {
                     ? () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MyAdsPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const MyAdsPage()),
                         );
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

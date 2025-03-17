@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:graduation___part1/views/collectData.dart';
-// import 'package:graduation___part1/views/profile.dart';
+// import 'package:informant/views/collectData.dart';
+// import 'package:informant/views/profile.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'editProfile.dart';
 

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../view_models/auth_view_model.dart';
 import 'package:graduation___part1/views/ad_list_view.dart' as adView;
 import 'package:graduation___part1/views/create_ad_view.dart';
-import 'package:graduation___part1/views/Statistics.dart';
+// import 'package:informant/views/Statistics.dart';
 import 'package:graduation___part1/views/autoProfile.dart';
 import 'package:graduation___part1/views/profile.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
@@ -243,10 +243,10 @@ class _HomeView1State extends State<HomeView1> with TickerProviderStateMixin {
                     _buildAnimatedCard(2, 'My Profile', '', Icons.person, () {
                       _navigateWithAnimation(context, const AutoProfile());
                     }),
-                    _buildAnimatedCard(3, 'Statistics',
-                        'View your ad performance', Icons.attach_money, () {
-                      _navigateWithAnimation(context, const ProfitView());
-                    }),
+                    // _buildAnimatedCard(3, 'Statistics',
+                    //     'View your ad performance', Icons.attach_money, () {
+                    //   _navigateWithAnimation(context, const ProfitView());
+                    // }),
                     _buildAnimatedCard(4, 'Log Out', '', Icons.logout, () {
                       logOut1(context);
                     }),

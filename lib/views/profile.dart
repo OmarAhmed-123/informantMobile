@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:graduation___part1/views/chat_cubit.dart';
-
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:graduation___part1/views/collectData.dart';
-
 import 'package:graduation___part1/views/home_view.dart';
-
 import 'chat_service.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 import 'editProfile.dart';
 import 'chat_window.dart';
@@ -150,19 +142,12 @@ class ProfilePageState extends State<ProfilePage>
               left: 0,
               right: 0,
               child: ChatWindow(
-                onBack: () {
-                  // Handle back action
-                },
+                onBack: _toggleChat,
                 onReply: (message) {
                   // Handle reply action
                   final cubit = context.read<ChatCubit>();
                   // Show a reply dialog or directly prepare the UI for reply
                 },
-                //onClose: _toggleChat,
-                //onCall: () {
-                //  _makePhoneCall(widget.profile.phone);
-                //                },
-               // username: widget.profile.name,
               ),
             ),
         ],

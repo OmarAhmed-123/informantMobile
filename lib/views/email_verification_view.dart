@@ -131,7 +131,6 @@ class emailVerificationViewS extends State<EmailVerificationView> {
 
 */
 
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/autoLogin.dart';

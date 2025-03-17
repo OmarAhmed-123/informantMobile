@@ -2,7 +2,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:io';
-import 'package:graduation___part1/views/httpCodeG.dart';
+import 'package:informant/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'view_models/auth_view_model.dart';
 import 'views/register_view.dart';

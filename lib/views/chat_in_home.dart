@@ -249,7 +249,7 @@ class ChatWindow extends StatelessWidget {
       ),
     );
   }
-}
+
 
 class ChatBubble extends StatelessWidget {
   final String message;

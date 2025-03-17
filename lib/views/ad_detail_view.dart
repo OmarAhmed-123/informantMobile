@@ -1,6 +1,6 @@
 /*
 import 'package:flutter/material.dart';
-import 'package:graduation___part1/models/ad.dart';
+import 'package:informant/models/ad.dart';
 
 class AdDetailView extends StatelessWidget {
   final Ad ad;
@@ -85,7 +85,7 @@ class AdDetailView extends StatelessWidget {
 /*
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:graduation___part1/models/ad.dart';
+import 'package:informant/models/ad.dart';
 
 class AdDetailView extends StatelessWidget {
   final Ad ad;

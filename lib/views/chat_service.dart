@@ -435,7 +435,6 @@ class ChatService {
 }
 */
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -550,14 +549,14 @@ class ChatService {
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-      'https://infinitely-native-lamprey.ngrok-free.app/chat',
-      HttpConnectionOptions(
-        accessTokenFactory: () async => token ?? '',
-        transport: HttpTransportType.webSockets,
-        skipNegotiation: true,
-        logging: (level, message) => print("SignalR: $message"),
-      ),
-    )
+          'https://infinitely-native-lamprey.ngrok-free.app/chat',
+          HttpConnectionOptions(
+            accessTokenFactory: () async => token ?? '',
+            transport: HttpTransportType.webSockets,
+            skipNegotiation: true,
+            logging: (level, message) => print("SignalR: $message"),
+          ),
+        )
         .withAutomaticReconnect()
         .build();
 
@@ -684,7 +683,8 @@ class ChatService {
   }
 
   // Messaging methods
-  Future<void> sendMessage(String receiverId, String content, {MessageType type = MessageType.text}) async {
+  Future<void> sendMessage(String receiverId, String content,
+      {MessageType type = MessageType.text}) async {
     if (content.trim().isEmpty) return;
 
     try {
@@ -709,7 +709,8 @@ class ChatService {
   // Call-related methods
   Future<void> initiateCall(String receiverId, bool isVideoCall) async {
     try {
-      await _hubConnection.invoke('InitiateCall', args: [receiverId, isVideoCall]);
+      await _hubConnection
+          .invoke('InitiateCall', args: [receiverId, isVideoCall]);
     } catch (e) {
       print("Error initiating call: $e");
     }
@@ -743,7 +744,8 @@ class ChatService {
   Future<String> saveAudioMessage(Uint8List audioBytes) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      final filePath =
+          '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
       final file = File(filePath);
       await file.writeAsBytes(audioBytes);
       return filePath;

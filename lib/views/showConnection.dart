@@ -26,7 +26,7 @@ class ShowConnectionS extends State<ShowConnection> {
                   height: 60,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/informant.jpeg'),
+                      image: AssetImage('assets/graduation___part1.jpeg'),
                       fit: BoxFit.cover,
                     ),
                     shape: BoxShape.circle,
@@ -34,7 +34,7 @@ class ShowConnectionS extends State<ShowConnection> {
                 ),
                 const SizedBox(width: 10),
                 const Text(
-                  'Informant',
+                  'Graduation___part1',
                   style: TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 22,
@@ -223,7 +223,7 @@ class ShowConnectionState extends State<ShowConnection>
                     height: 60,
                     decoration: BoxDecoration(
                       image: const DecorationImage(
-                        image: AssetImage('assets/informant.jpeg'),
+                        image: AssetImage('assets/graduation___part1.jpeg'),
                         fit: BoxFit.cover,
                       ),
                       shape: BoxShape.circle,
@@ -239,7 +239,7 @@ class ShowConnectionState extends State<ShowConnection>
                   ),
                   const SizedBox(width: 15),
                   const Text(
-                    'Informant',
+                    'Graduation___part1',
                     style: TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 24,
@@ -279,8 +279,7 @@ class ShowConnectionState extends State<ShowConnection>
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: 120,
-                            backgroundImage:
-                                AssetImage('assets/internet.jpeg'),
+                            backgroundImage: AssetImage('assets/internet.jpeg'),
                             backgroundColor: Colors.transparent,
                           ),
                         ),

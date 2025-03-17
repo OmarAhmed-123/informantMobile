@@ -7,12 +7,12 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'register_view.dart';
-import 'package:graduation___part1/views/autoLogin.dart';
+import 'package:informant/views/autoLogin.dart';
 import '../view_models/auth_view_model.dart';
 import 'email_verification_view.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
+import 'package:informant/views/httpCodeG.dart';
 import 'home_view.dart';
 
 List<Map<String, dynamic>> ads = [];

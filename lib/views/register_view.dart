@@ -1,6 +1,6 @@
 /*
-import 'package:graduation___part1/views/httpCodeG.dart';
-import 'package:graduation___part1/views/autoLogin.dart';
+import 'package:informant/views/httpCodeG.dart';
+import 'package:informant/views/autoLogin.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
@@ -268,7 +268,7 @@ class registerViewS extends State<RegisterView>
 /*
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation___part1/views/autoLogin.dart';
+import 'package:informant/views/autoLogin.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
@@ -518,7 +518,6 @@ class registerViewS extends State<RegisterView>
 */
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation___part1/views/autoLogin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
 import 'auth_cubit.dart'; // Import the AuthCubit

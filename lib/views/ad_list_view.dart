@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../models/ad.dart';
 import 'ad_detail_view.dart';
-import 'package:graduation___part1/views/home_view.dart';
-import 'package:graduation___part1/views/barOfHome.dart';
+import 'package:informant/views/home_view.dart';
+import 'package:informant/views/barOfHome.dart';
 
 class AdListView extends StatefulWidget {
   const AdListView({Key? key}) : super(key: key);
@@ -487,7 +487,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     initiAnimations();
-    Ads=ads;
+    Ads = ads;
   }
 
   void initiAnimations() {
@@ -705,7 +705,7 @@ class AdListViewS extends State<AdListView> with TickerProviderStateMixin {
                                             .toDouble(),
                                     availablePlaces: ad['availablePlaces'],
                                     creatorName: ad['creatorName'],
-                                   // price: 0.0,
+                                    // price: 0.0,
                                     createdAt: DateTime.now(),
                                     earnings: 0.0,
                                   ),
