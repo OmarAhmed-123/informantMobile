@@ -45,7 +45,65 @@ class ChatCubit extends Cubit<List<ChatMessage>> {
   }
 }
 */
+/*
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+enum MessageType { text, audio }
+
+class ChatMessage {
+  final String id;
+  final String sender;
+  final String text;
+  final DateTime timestamp;
+  final MessageType type;
+  final ChatMessage? replyTo;
+  final String? audioPath;
+
+  ChatMessage({
+    required this.id,
+    required this.sender,
+    required this.text,
+    required this.timestamp,
+    this.type = MessageType.text,
+    this.replyTo,
+    this.audioPath,
+  });
+}
+
+class ChatCubit extends Cubit<List<ChatMessage>> {
+  ChatCubit() : super([]);
+
+  void sendMessage(String message, String sender, {ChatMessage? replyTo}) {
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: sender,
+      text: message,
+      timestamp: DateTime.now(),
+      type: MessageType.text,
+      replyTo: replyTo,
+    );
+
+    emit([...state, newMessage]);
+  }
+
+  void sendAudioMessage(String audioPath, String sender,
+      {ChatMessage? replyTo}) {
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: sender,
+      text: "Voice message",
+      timestamp: DateTime.now(),
+      type: MessageType.audio,
+      replyTo: replyTo,
+      audioPath: audioPath,
+    );
+
+    emit([...state, newMessage]);
+  }
+}
+*/
+
+/*
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum MessageType { text, audio }
@@ -102,6 +160,61 @@ class ChatCubit extends Cubit<List<ChatMessage>> {
   }
 }
 
+*/
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+enum MessageType { text, audio }
+
+class ChatMessage {
+  final String id;
+  final String sender;
+  final String text;
+  final DateTime timestamp;
+  final MessageType type;
+  final ChatMessage? replyTo;
+  final String? audioPath;
+
+  ChatMessage({
+    required this.id,
+    required this.sender,
+    required this.text,
+    required this.timestamp,
+    this.type = MessageType.text,
+    this.replyTo,
+    this.audioPath,
+  });
+}
+
+class ChatCubit extends Cubit<List<ChatMessage>> {
+  ChatCubit() : super([]);
+
+  void sendMessage(String message, String sender, {ChatMessage? replyTo}) {
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: sender,
+      text: message,
+      timestamp: DateTime.now(),
+      type: MessageType.text,
+      replyTo: replyTo,
+    );
+
+    emit([...state, newMessage]);
+  }
+
+  void sendAudioMessage(String audioPath, String sender, {ChatMessage? replyTo}) {
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sender: sender,
+      text: "Voice message",
+      timestamp: DateTime.now(),
+      type: MessageType.audio,
+      replyTo: replyTo,
+      audioPath: audioPath,
+    );
+
+    emit([...state, newMessage]);
+  }
+}
 /*
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation___part1/views/profile.dart';

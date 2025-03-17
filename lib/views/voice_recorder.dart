@@ -1,77 +1,84 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:record/record.dart' as record_plugin;
+import 'package:record/record.dart';
 
 class VoiceRecorder {
-  final record_plugin.AudioRecorder _audioRecorder =
-      record_plugin.AudioRecorder();
+  final AudioRecorder _audioRecorder = AudioRecorder();
+  String? _recordingPath;
   bool _isRecording = false;
+  Timer? _timer;
+  int _recordingDuration = 0;
+
+  final StreamController<int> _durationController = StreamController<int>.broadcast();
+  Stream<int> get durationStream => _durationController.stream;
 
   bool get isRecording => _isRecording;
+  int get recordingDuration => _recordingDuration;
 
-  Future<bool> hasPermission() async {
-    try {
-      PermissionStatus microphoneStatus = await Permission.microphone.status;
-
-      if (!microphoneStatus.isGranted) {
-        microphoneStatus = await Permission.microphone.request();
-      }
-
-      if (Platform.isAndroid) {
-        PermissionStatus storageStatus = await Permission.storage.status;
-
-        if (!storageStatus.isGranted) {
-          storageStatus = await Permission.storage.request();
-        }
-
-        return microphoneStatus.isGranted && storageStatus.isGranted;
-      }
-
-      return microphoneStatus.isGranted;
-    } catch (e) {
-      print('Error checking permissions: $e');
-      return false;
+  Future<void> initialize() async {
+    if (await _checkPermission()) {
+      final isRecordPermitted = await Permission.microphone.status.isGranted;
+      print("Recording supported: $isRecordPermitted");
     }
+  }
+
+  Future<bool> _checkPermission() async {
+    if (!kIsWeb) {
+      final status = await Permission.microphone.request();
+      return status == PermissionStatus.granted;
+    }
+    return true;
   }
 
   Future<void> startRecording() async {
     if (!_isRecording) {
-      try {
-        final directory = await getTemporaryDirectory();
-        final filePath =
-            '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      if (await _checkPermission()) {
+        _recordingPath = await _getRecordingPath();
 
-        // Check if the recorder has permission and is ready
-        final hasPermissions = await _audioRecorder.hasPermission();
-        if (!hasPermissions) {
-          throw Exception('Microphone permission not granted');
-        }
-
-        // Configure and start the recording
         await _audioRecorder.start(
-          const record_plugin.RecordConfig(
-            encoder: record_plugin.AudioEncoder.aacLc,
+          const RecordConfig(
+            encoder: AudioEncoder.aacLc,
             bitRate: 128000,
             sampleRate: 44100,
           ),
-          path: filePath,
+          path: _recordingPath!,
         );
 
         _isRecording = true;
-      } catch (e) {
-        print('Error starting recording: $e');
-        rethrow;
+        _recordingDuration = 0;
+        _startTimer();
       }
     }
   }
 
+  Future<String> _getRecordingPath() async {
+    if (kIsWeb) {
+      return 'recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    }
+
+    final directory = await getTemporaryDirectory();
+    return '${directory.path}/recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _recordingDuration++;
+      _durationController.add(_recordingDuration);
+    });
+  }
+
   Future<String?> stopRecording() async {
+    _timer?.cancel();
+
     if (_isRecording) {
       try {
         final path = await _audioRecorder.stop();
         _isRecording = false;
-        return path;
+        return path; // Return the nullable path
       } catch (e) {
         print('Error stopping recording: $e');
         _isRecording = false;
@@ -82,10 +89,19 @@ class VoiceRecorder {
   }
 
   Future<void> cancelRecording() async {
+    _timer?.cancel();
+
     if (_isRecording) {
       try {
         await _audioRecorder.stop();
         _isRecording = false;
+
+        if (_recordingPath != null && !kIsWeb) {
+          final file = File(_recordingPath!);
+          if (await file.exists()) {
+            await file.delete();
+          }
+        }
       } catch (e) {
         print('Error canceling recording: $e');
         _isRecording = false;
@@ -93,11 +109,13 @@ class VoiceRecorder {
     }
   }
 
-  Future<void> disposeRecorder() async {
-    try {
-      await _audioRecorder.dispose();
-    } catch (e) {
-      print('Error disposing recorder: $e');
+  void dispose() {
+    _timer?.cancel();
+    _durationController.close();
+
+    if (_isRecording) {
+      _audioRecorder.stop();
     }
+    _audioRecorder.dispose();
   }
 }

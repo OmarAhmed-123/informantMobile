@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -19,142 +20,128 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   bool _isPlaying = false;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
+  StreamSubscription? _durationSubscription;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _playerCompleteSubscription;
 
   @override
   void initState() {
     super.initState();
-    _setupAudioPlayer();
+    _initAudioPlayer();
   }
 
-  void _setupAudioPlayer() {
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _isPlaying = state == PlayerState.playing;
-      });
+  Future<void> _initAudioPlayer() async {
+    // Setup audio player
+    await _audioPlayer.setReleaseMode(ReleaseMode.stop);
+
+    _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
+      if (mounted) {
+        setState(() => _duration = duration);
+      }
     });
 
-    _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        _duration = duration;
-      });
+    _positionSubscription = _audioPlayer.onPositionChanged.listen((position) {
+      if (mounted) {
+        setState(() => _position = position);
+      }
     });
 
-    _audioPlayer.onPositionChanged.listen((position) {
-      setState(() {
-        _position = position;
-      });
+    _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((event) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+          _position = Duration.zero;
+        });
+      }
     });
 
-    _audioPlayer.onPlayerComplete.listen((_) {
-      setState(() {
-        _isPlaying = false;
-        _position = Duration.zero;
-      });
-    });
+    try {
+      if (File(widget.audioPath).existsSync()) {
+        // Local file
+        await _audioPlayer.setSourceDeviceFile(widget.audioPath);
+      } else {
+        // Assume it's a URL
+        await _audioPlayer.setSourceUrl(widget.audioPath);
+      }
+    } catch (e) {
+      print('Error setting audio source: $e');
+    }
   }
 
   @override
   void dispose() {
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerCompleteSubscription?.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }
 
-  Future<void> _playPause() async {
-    try {
-      if (_isPlaying) {
-        await _audioPlayer.pause();
-      } else {
-        if (File(widget.audioPath).existsSync()) {
-          await _audioPlayer.play(DeviceFileSource(widget.audioPath));
-        } else {
-          print('Audio file does not exist: ${widget.audioPath}');
-        }
-      }
-    } catch (e) {
-      print('Error playing audio: $e');
-    }
-  }
-
   String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
+    String minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      width: 200,
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.blue.shade900.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(25),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
+          // Play/Pause button
           IconButton(
             icon: Icon(
               _isPlaying ? Icons.pause : Icons.play_arrow,
               color: Colors.white,
-              size: 24,
             ),
-            onPressed: _playPause,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
+            onPressed: () async {
+              if (_isPlaying) {
+                await _audioPlayer.pause();
+              } else {
+                await _audioPlayer.resume();
+              }
+
+              setState(() {
+                _isPlaying = !_isPlaying;
+              });
+            },
           ),
-          const SizedBox(width: 8),
+
+          // Progress slider
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SliderTheme(
-                  data: SliderThemeData(
-                    trackHeight: 4,
-                    thumbShape:
-                        const RoundSliderThumbShape(enabledThumbRadius: 6),
-                    overlayShape:
-                        const RoundSliderOverlayShape(overlayRadius: 10),
-                    activeTrackColor: Colors.blue[300],
-                    inactiveTrackColor: Colors.grey[600],
-                    thumbColor: Colors.blue[300],
-                  ),
-                  child: Slider(
-                    min: 0,
-                    max: _duration.inMilliseconds.toDouble(),
-                    value: _position.inMilliseconds.toDouble().clamp(
-                          0,
-                          _duration.inMilliseconds.toDouble(),
-                        ),
-                    onChanged: (value) {
-                      _audioPlayer.seek(Duration(milliseconds: value.toInt()));
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _formatDuration(_position),
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 10,
-                        ),
-                      ),
-                      Text(
-                        _formatDuration(_duration),
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            child: Slider(
+              value: _position.inMilliseconds.toDouble(),
+              min: 0.0,
+              max: _duration.inMilliseconds.toDouble() + 1.0,
+              onChanged: (value) async {
+                final position = Duration(milliseconds: value.toInt());
+                await _audioPlayer.seek(position);
+
+                // If the audio was paused, keep it paused
+                if (!_isPlaying) {
+                  await _audioPlayer.pause();
+                }
+              },
+              activeColor: Colors.white,
+              inactiveColor: Colors.grey,
+            ),
+          ),
+
+          // Duration text
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Text(
+              _formatDuration(_position),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
             ),
           ),
         ],

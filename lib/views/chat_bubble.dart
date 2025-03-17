@@ -29,7 +29,7 @@ class ChatBubble extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment:
-                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               if (message.replyTo != null) _buildReplyPreview(context),
               Container(
@@ -84,32 +84,35 @@ class ChatBubble extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment:
-                    isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[850],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.reply,
-                          size: 12,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          "Reply",
-                          style: TextStyle(
+                  GestureDetector(
+                    onTap: onReply,
+                    child: Container(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.reply,
+                            size: 12,
                             color: Colors.grey[400],
-                            fontSize: 10,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Text(
+                            "Reply",
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

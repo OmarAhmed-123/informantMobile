@@ -17,22 +17,38 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    // Fix for Unsupported class file major version 65
+    configurations.all {
+        resolutionStrategy {
+            force 'org.codehaus.groovy:groovy:3.0.9'
+            force 'org.codehaus.groovy:groovy-json:3.0.9'
+        }
+    }
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
+
+    // Apply the compileSdkVersion configuration during evaluation
+    afterEvaluate {
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion 35 // Set to the correct SDK version (e.g., 34)
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-*/
 
 
+ */
 buildscript {
     ext.kotlin_version = '1.7.10'
     repositories {
@@ -51,7 +67,7 @@ allprojects {
         google()
         mavenCentral()
     }
-    
+
     // Fix for Unsupported class file major version 65
     configurations.all {
         resolutionStrategy {
@@ -62,11 +78,15 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
+}
+
+// Set a consistent compileSdkVersion for all Android subprojects
+ext {
+    compileSdkVersion = 34
 }
 
 tasks.register("clean", Delete) {
