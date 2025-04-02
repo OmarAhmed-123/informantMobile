@@ -2,7 +2,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:io';
-import 'package:informant/views/httpCodeG.dart';
+import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'view_models/auth_view_model.dart';
 import 'views/register_view.dart';
@@ -84,6 +84,8 @@ class MyAppS extends State<MyApp> {
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graduation___part1/views/chat_cubit.dart';
+import 'package:graduation___part1/views/chat_window.dart';
 import 'package:provider/provider.dart';
 import 'package:no_screenshot/no_screenshot.dart';
 import 'view_models/auth_view_model.dart';
@@ -122,6 +124,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         Provider<ApiService>.value(value: apiService),
         BlocProvider(create: (context) => auth_cubit.AuthCubit()),
+        BlocProvider(
+            create: (context) => ChatCubit()), // Provide ChatCubit here
       ],
       child: const MyApp(),
     ),
@@ -154,7 +158,12 @@ class MyAppState extends State<MyApp> {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/home',
+      home: ChatWindow(
+        //added from this
+        onBack: () {}, // Provide a dummy callback for onBack
+        onReply: (message) {}, // Provide a dummy callback for onReply
+      ),
+      initialRoute: '/login',
       routes: {
         '/signup': (context) => const RegisterView(),
         '/login': (context) => const LoginView(),

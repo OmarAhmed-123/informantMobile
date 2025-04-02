@@ -161,6 +161,7 @@ class ChatCubit extends Cubit<List<ChatMessage>> {
 }
 
 */
+/*
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum MessageType { text, audio }
@@ -215,33 +216,135 @@ class ChatCubit extends Cubit<List<ChatMessage>> {
     emit([...state, newMessage]);
   }
 }
-/*
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graduation___part1/views/profile.dart';
-import 'chat_service.dart';
+*/
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'chat_service.dart' as service;
+
+enum MessageType { text, audio }
+
+class ChatMessage {
+  final String id;
+  final String sender;
+  final String text;
+  final DateTime timestamp;
+  final MessageType type;
+  final ChatMessage? replyTo;
+  final String? audioPath;
+
+  ChatMessage({
+    required this.id,
+    required this.sender,
+    required this.text,
+    required this.timestamp,
+    this.type = MessageType.text,
+    this.replyTo,
+    this.audioPath,
+  });
+
+  factory ChatMessage.fromServiceMessage(service.ChatMessage message) {
+    return ChatMessage(
+      id: message.id,
+      sender: message.senderId,
+      text: message.content,
+      timestamp: message.timestamp,
+      type: message.type == service.MessageType.audio
+          ? MessageType.audio
+          : MessageType.text,
+      audioPath:
+          message.type == service.MessageType.audio ? message.content : null,
+    );
+  }
+}
 
 class ChatCubit extends Cubit<List<ChatMessage>> {
-  final ChatService _chatService;
+  final service.ChatService _chatService = service.ChatService();
+  String? _selectedReceiverId;
 
-  ChatCubit(this._chatService) : super([]) {
-    _initialize();
+  String get _getReceiverId => _selectedReceiverId ?? 'default-receiver-id';
+
+  ChatCubit() : super([]) {
+    _initializeChat();
   }
 
-  void _initialize() async {
-    await _chatService.connect();
-    _chatService.onReceiveMessage((sender, message) {
-      final chatMessage = ChatMessage(
-        text: message,
-        sender: sender,
-        timestamp: DateTime.now(),
+  Future<void> _initializeChat() async {
+    try {
+      await _chatService.connect();
+      _chatService.onMessageReceived = _handleMessageReceived;
+    } catch (e) {
+      debugPrint('Error initializing chat service: $e');
+    }
+  }
+
+  void _handleMessageReceived(service.ChatMessage message) {
+    if (_selectedReceiverId != null &&
+        (message.senderId == _selectedReceiverId ||
+            message.receiverId == _selectedReceiverId)) {
+      final newUiMessage = ChatMessage.fromServiceMessage(message);
+      emit([...state, newUiMessage]);
+    }
+  }
+
+  void selectReceiver(String receiverId) {
+    _selectedReceiverId = receiverId;
+  }
+
+  void sendMessage(String message, String sender, {ChatMessage? replyTo}) {
+    try {
+      _chatService.sendMessage(
+        _getReceiverId,
+        message,
       );
-      emit([...state, chatMessage]);
-    });
+
+      final newMessage = ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        sender: sender,
+        text: message,
+        timestamp: DateTime.now(),
+        type: MessageType.text,
+        replyTo: replyTo,
+      );
+
+      emit([...state, newMessage]);
+    } catch (e) {
+      debugPrint('Error sending message: $e');
+    }
   }
 
-  void sendMessage(String message, String sender) {
-    _chatService.sendMessage(message, sender);
+  void sendAudioMessage(String audioPath, String sender,
+      {ChatMessage? replyTo}) {
+    try {
+      _chatService.sendMessage(
+        _getReceiverId,
+        audioPath,
+        type: service.MessageType.audio,
+      );
+
+      final newMessage = ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        sender: sender,
+        text: "Voice message",
+        timestamp: DateTime.now(),
+        type: MessageType.audio,
+        replyTo: replyTo,
+        audioPath: audioPath,
+      );
+
+      emit([...state, newMessage]);
+    } catch (e) {
+      debugPrint('Error sending audio message: $e');
+    }
+  }
+
+  void sendTypingNotification() {
+    try {
+      if (_selectedReceiverId != null) {
+        _chatService.sendTypingNotification(_selectedReceiverId!);
+      }
+    } catch (e) {
+      debugPrint('Error sending typing notification: $e');
+    }
   }
 
   @override
@@ -250,4 +353,3 @@ class ChatCubit extends Cubit<List<ChatMessage>> {
     return super.close();
   }
 }
-*/

@@ -32,6 +32,8 @@ dependencies:
   audioplayers: ^6.4.0
   carousel_slider: ^5.0.0
   shared_preferences: ^2.0.6 # Compatible with Dart SDK >=3.5.0
+  flutter_spinkit: ^5.2.1
+  flutter_slidable: ^3.1.2
 
 dev_dependencies:
   flutter_test:

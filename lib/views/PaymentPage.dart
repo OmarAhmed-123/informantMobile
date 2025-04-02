@@ -75,17 +75,18 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:graduation___part1/views/MyAdsPage.dart';
 
 class PaymentPage extends StatefulWidget {
-  final String url; // URL for the payment page
+  final String url; // Add a url parameter to the constructor
   const PaymentPage({super.key, required this.url});
-
   @override
   _PaymentPageState createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  bool isPaymentCompleted = false; // Track if payment is completed
+  bool isPaymentCompleted = false;
+
   bool hasError = false; // Track if there's an error
-  InAppWebViewController? _webViewController; // Controller for the web view
+
+  InAppWebViewController? _webViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,6 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       body: Column(
         children: [
-          // WebView to load the payment page
           Expanded(
             child: hasError
                 ? Center(
@@ -129,12 +129,12 @@ class _PaymentPageState extends State<PaymentPage> {
                   )
                 : InAppWebView(
                     initialUrlRequest: URLRequest(
-                        url: WebUri(widget.url)), // Changed Uri.parse to WebUri
+                      url: WebUri(widget.url),
+                    ),
                     onWebViewCreated: (controller) {
                       _webViewController = controller;
                     },
                     onLoadStop: (controller, url) async {
-                      // Check if the payment is completed
                       if (url.toString().contains("payment-success")) {
                         setState(() {
                           isPaymentCompleted = true;
@@ -143,13 +143,13 @@ class _PaymentPageState extends State<PaymentPage> {
                     },
                     onLoadError: (controller, url, code, message) {
                       // Handle loading errors
+
                       setState(() {
                         hasError = true;
                       });
                     },
                   ),
           ),
-          // Button to proceed to My Ads page
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AnimatedOpacity(

@@ -1,66 +1,73 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class AudioRecorderHelper {
-  final AudioRecorder _audioRecorder = AudioRecorder();
+  final AudioRecorder _recorder = AudioRecorder();
   bool _isRecording = false;
 
   bool get isRecording => _isRecording;
 
   Future<bool> hasPermission() async {
-    return await AudioPermissionHandler.hasPermission();
+    try {
+      final status = await Permission.microphone.request();
+      return status == PermissionStatus.granted;
+    } catch (e) {
+      debugPrint('Error checking microphone permission: $e');
+      return false;
+    }
   }
 
   Future<void> start() async {
-    if (!_isRecording) {
-      try {
-        final directory = await getTemporaryDirectory();
-        final filePath =
-            '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    if (_isRecording) return;
 
-        await _audioRecorder.start(
-          const RecordConfig(
-            encoder: AudioEncoder.aacLc,
-            bitRate: 128000,
-            sampleRate: 44100,
-          ),
-          path: filePath,
+    try {
+      if (await hasPermission()) {
+        final tempDir = await getTemporaryDirectory();
+        final path =
+            '${tempDir.path}/audio_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+        final audioConfig = const RecordConfig(
+          encoder: AudioEncoder.aacLc,
+          bitRate: 128000,
+          sampleRate: 44100,
         );
+
+        await _recorder.start(audioConfig, path: path);
         _isRecording = true;
-      } catch (e) {
-        print('Error starting recording: $e');
-        rethrow;
       }
+    } catch (e) {
+      debugPrint('Error starting recording: $e');
     }
   }
 
   Future<String?> stop() async {
-    if (_isRecording) {
-      try {
-        final path = await _audioRecorder.stop();
-        _isRecording = false;
-        return path;
-      } catch (e) {
-        print('Error stopping recording: $e');
-        _isRecording = false;
-        return null;
-      }
+    if (!_isRecording) return null;
+
+    try {
+      final path = await _recorder.stop();
+      _isRecording = false;
+      return path;
+    } catch (e) {
+      debugPrint('Error stopping recording: $e');
+      _isRecording = false;
+      return null;
     }
-    return null;
   }
 
   Future<void> dispose() async {
-    if (_isRecording) {
-      try {
-        await _audioRecorder.stop();
-      } catch (e) {
-        print('Error stopping recording during dispose: $e');
+    try {
+      if (_isRecording) {
+        await _recorder.stop();
       }
+      // Dispose the recorder
+      await _recorder.dispose();
+    } catch (e) {
+      debugPrint('Error disposing audio recorder: $e');
     }
-    _isRecording = false;
-    await _audioRecorder.dispose();
   }
 }
 
@@ -86,7 +93,7 @@ class AudioPermissionHandler {
 
       return microphoneStatus.isGranted;
     } catch (e) {
-      print('Error checking permissions: $e');
+      debugPrint('Error checking permissions: $e');
       return false;
     }
   }
@@ -102,23 +109,7 @@ class AudioPermissionHandler {
 
       return microphoneStatus.isGranted;
     } catch (e) {
-      print('Error requesting permissions: $e');
-      return false;
-    }
-  }
-
-  static Future<bool> isPermanentlyDenied() async {
-    try {
-      bool microphoneDenied = await Permission.microphone.isPermanentlyDenied;
-
-      if (Platform.isAndroid) {
-        bool storageDenied = await Permission.storage.isPermanentlyDenied;
-        return microphoneDenied || storageDenied;
-      }
-
-      return microphoneDenied;
-    } catch (e) {
-      print('Error checking permanent denial: $e');
+      debugPrint('Error requesting permissions: $e');
       return false;
     }
   }
@@ -127,7 +118,7 @@ class AudioPermissionHandler {
     try {
       await openAppSettings();
     } catch (e) {
-      print('Error opening settings: $e');
+      debugPrint('Error opening settings: $e');
     }
   }
 }
