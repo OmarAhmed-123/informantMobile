@@ -4634,7 +4634,6 @@ class ChatService {
   }
 }
 */
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
@@ -4645,6 +4644,9 @@ import 'package:signalr_core/signalr_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatUser {
   final String userId;
@@ -4679,6 +4681,7 @@ class ChatMessage {
   final DateTime timestamp;
   final MessageType type;
   final bool isRead;
+  final String? localFilePath; // For locally stored files
 
   const ChatMessage({
     required this.id,
@@ -4688,6 +4691,7 @@ class ChatMessage {
     required this.timestamp,
     this.type = MessageType.text,
     this.isRead = false,
+    this.localFilePath,
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
@@ -4701,6 +4705,29 @@ class ChatMessage {
           : DateTime.now(),
       type: _parseMessageType(json['type']),
       isRead: json['isRead'] ?? false,
+      localFilePath: json['localFilePath'],
+    );
+  }
+
+  ChatMessage copyWith({
+    String? id,
+    String? senderId,
+    String? receiverId,
+    String? content,
+    DateTime? timestamp,
+    MessageType? type,
+    bool? isRead,
+    String? localFilePath,
+  }) {
+    return ChatMessage(
+      id: id ?? this.id,
+      senderId: senderId ?? this.senderId,
+      receiverId: receiverId ?? this.receiverId,
+      content: content ?? this.content,
+      timestamp: timestamp ?? this.timestamp,
+      type: type ?? this.type,
+      isRead: isRead ?? this.isRead,
+      localFilePath: localFilePath ?? this.localFilePath,
     );
   }
 
@@ -4759,14 +4786,30 @@ class ChatService {
   Function(String)? onConnectionError;
   Function()? onConnectionSuccess;
 
+  // Call and media callbacks
+  Function(bool isVideo)? onCallInitiated;
+  Function(String imagePath)? onImageSelected;
+
   bool _isConnected = false;
   bool get isConnected => _isConnected;
+
+  // For media handling
+  final ImagePicker _imagePicker = ImagePicker();
 
   ChatService() {
     // Initialize Dio with error handling
     _dio.options.validateStatus = (status) {
       return status != null && status < 500;
     };
+
+    // Request permissions early
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+    await Permission.photos.request();
   }
 
   Future<void> connect() async {
@@ -4797,16 +4840,6 @@ class ChatService {
         token = prefs.getString('pToken');
       }
 
-      // Hard-coded fallback for testing if no token is found
-      if (token == null) {
-        token =
-            "s1PPIgtC8AG+x0Qr+F++zHFBLOB0MqKzFYt6vDHr259yJ6US7WrK16pDo/8ua4bLbSKwDAcTH+fLXsglVzz8hu03D7CzF+kX8vnruONnAB/O56YZe/pbymI1ZJioW3V3MqTnCiHoUagPLTzjZOj2N4kxH7WSSn89t9gtQwWJW3XmzYYO/EkMRQ7vRUaxKGW77ExLEvmi8FDqHg9cbgIApN33KQpW6bMY2wx1bWkNW68jTanUeOpLCWx9JXx3ul1W";
-      }
-
-      if (_currentUserId == null) {
-        _currentUserId = "user123"; // Fallback user ID for testing
-      }
-
       if (token == null || _currentUserId == null) {
         print("Error: Authentication token or user ID is missing");
         _reconnecting = false;
@@ -4817,8 +4850,7 @@ class ChatService {
 
       // Set up Dio with both header formats to maximize compatibility
       _dio.options.headers["Authorization"] = "Bearer $token";
-      _dio.options.headers["Authentication"] =
-          token; // Some servers use this format
+      _dio.options.headers["Authentication"] = token;
 
       // Configure SignalR connection
       final httpConnectionOptions = HttpConnectionOptions(
@@ -4989,7 +5021,13 @@ class ChatService {
         try {
           final messageData = arguments[0] as Map<String, dynamic>;
           final message = ChatMessage.fromJson(messageData);
-          onMessageReceived?.call(message);
+
+          // Only process messages intended for the current user
+          if (_currentUserId != null &&
+              (message.senderId == _currentUserId ||
+                  message.receiverId == _currentUserId)) {
+            onMessageReceived?.call(message);
+          }
         } catch (e) {
           print("Error processing received message: $e");
         }
@@ -5144,12 +5182,6 @@ class ChatService {
         token = prefs.getString('pToken');
       }
 
-      // Use fallback token if still null
-      if (token == null) {
-        token =
-            "s1PPIgtC8AG+x0Qr+F++zHFBLOB0MqKzFYt6vDHr259yJ6US7WrK16pDo/8ua4bLbSKwDAcTH+fLXsglVzz8hu03D7CzF+kX8vnruONnAB/O56YZe/pbymI1ZJioW3V3MqTnCiHoUagPLTzjZOj2N4kxH7WSSn89t9gtQwWJW3XmzYYO/EkMRQ7vRUaxKGW77ExLEvmi8FDqHg9cbgIApN33KQpW6bMY2wx1bWkNW68jTanUeOpLCWx9JXx3ul1W";
-      }
-
       if (token == null) {
         print("Error: Authentication token is missing");
         _addDefaultUserIfEmpty();
@@ -5170,9 +5202,7 @@ class ChatService {
     // Define all options to try
     final endpoints = [
       'https://infinitely-native-lamprey.ngrok-free.app/user/users',
-      'https://infinitely-native-lamprey.ngrok-free.app/api/users',
-      'https://infinitely-native-lamprey.ngrok-free.app/users',
-      'https://infinitely-native-lamprey.ngrok-free.app/chat/users',
+      'https://infinitely-native-lamprey.ngrok-free.app/api/users'
     ];
 
     final authHeaders = [
@@ -5261,15 +5291,38 @@ class ChatService {
 
     print("Updating users list with ${usersData.length} users");
 
+    // Keep track of which users were online before
+    final Map<String, bool> previousOnlineStatus = {};
+    for (var user in _onlineUsers) {
+      previousOnlineStatus[user.userId] = user.isOnline;
+    }
+
     _onlineUsers.clear();
 
     // Process each user
     for (var userData in usersData) {
       try {
-        final user = ChatUser.fromJson(userData);
-        _onlineUsers.add(user);
+        final ChatUser user = ChatUser.fromJson(userData);
+
+        // Only add user if they have a valid userId
+        if (user.userId.isNotEmpty) {
+          _onlineUsers.add(user);
+        }
       } catch (e) {
         print("Error parsing user data: $e");
+      }
+    }
+
+    // Ensure proper online status display
+    for (int i = 0; i < _onlineUsers.length; i++) {
+      // Force the current user to always appear online
+      if (_currentUserId != null && _onlineUsers[i].userId == _currentUserId) {
+        _onlineUsers[i] = ChatUser(
+          userId: _onlineUsers[i].userId,
+          username: _onlineUsers[i].username,
+          profileImage: _onlineUsers[i].profileImage,
+          isOnline: true,
+        );
       }
     }
 
@@ -5292,8 +5345,8 @@ class ChatService {
 
   // Messaging methods
   Future<bool> sendMessage(String receiverId, String content,
-      {MessageType type = MessageType.text}) async {
-    if (content.trim().isEmpty) return false;
+      {MessageType type = MessageType.text, String? localFilePath}) async {
+    if (content.trim().isEmpty && type == MessageType.text) return false;
 
     if (_isConnected && _hubConnection != null) {
       try {
@@ -5335,6 +5388,39 @@ class ChatService {
     }
   }
 
+  // Image handling methods
+  Future<String?> pickImage() async {
+    try {
+      final XFile? pickedFile = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70,
+      );
+
+      if (pickedFile != null) {
+        onImageSelected?.call(pickedFile.path);
+        return pickedFile.path;
+      }
+      return null;
+    } catch (e) {
+      print("Error picking image: $e");
+      return null;
+    }
+  }
+
+  Future<bool> sendImageMessage(String receiverId, String imagePath) async {
+    try {
+      // Optimize the image before sending (TODO: implement server upload)
+      // For now, we'll just send the local path in the message
+      return await sendMessage(receiverId,
+          imagePath, // Server would receive this path, but would need to be modified in production
+          type: MessageType.image,
+          localFilePath: imagePath);
+    } catch (e) {
+      print("Error sending image message: $e");
+      return false;
+    }
+  }
+
   // Call-related methods
   Future<bool> initiateCall(String receiverId, bool isVideoCall) async {
     if (!_isConnected || _hubConnection == null) {
@@ -5346,12 +5432,40 @@ class ChatService {
     }
 
     try {
+      // Notify UI about call initiation
+      onCallInitiated?.call(isVideoCall);
+
+      // For actual calls, we'd use WebRTC or a similar technology
       await _hubConnection!
           .invoke('InitiateCall', args: [receiverId, isVideoCall]);
+
+      // Launch appropriate app for handling calls
+      if (isVideoCall) {
+        // Example: launch a video call app
+        final videoCallUrl = 'facetime:$receiverId'; // iOS example
+        await _launchCallApp(videoCallUrl);
+      } else {
+        // Example: launch a voice call app
+        final voiceCallUrl = 'tel:$receiverId'; // Standard tel protocol
+        await _launchCallApp(voiceCallUrl);
+      }
+
       return true;
     } catch (e) {
       print("Error initiating call: $e");
       return false;
+    }
+  }
+
+  Future<void> _launchCallApp(String url) async {
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        print("Could not launch $url");
+      }
+    } catch (e) {
+      print("Error launching call app: $e");
     }
   }
 

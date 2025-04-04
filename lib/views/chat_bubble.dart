@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'chat_cubit.dart';
@@ -185,5 +186,243 @@ class ChatBubble extends StatelessWidget {
 
   String _formatTimestamp(DateTime timestamp) {
     return '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
+  }
+}
+*/
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
+import 'audio_player_widget.dart';
+import 'chat_cubit.dart';
+
+class ChatBubble extends StatelessWidget {
+  final ChatMessage message;
+  final bool isMe;
+  final VoidCallback onReply;
+
+  const ChatBubble({
+    Key? key,
+    required this.message,
+    required this.isMe,
+    required this.onReply,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
+        ),
+        decoration: BoxDecoration(
+          color: isMe ? Colors.blue.shade600 : Colors.grey.shade700,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (message.replyTo != null) ...[
+                _buildReplyPreview(context),
+                const SizedBox(height: 8),
+                const Divider(color: Colors.white24),
+              ],
+
+              // Message content based on type
+              _buildMessageContent(),
+
+              // Timestamp
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    "${message.timestamp.hour}:${message.timestamp.minute.toString().padLeft(2, '0')}",
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReplyPreview(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: isMe ? Colors.blue.shade800 : Colors.grey.shade800,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Reply to",
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade400,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            message.replyTo!.text,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade300,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageContent() {
+    switch (message.type) {
+      case MessageType.audio:
+        return _buildAudioContent();
+      case MessageType.image:
+        return _buildImageContent();
+      case MessageType.video:
+        return _buildVideoContent();
+      case MessageType.text:
+      default:
+        return _buildTextContent();
+    }
+  }
+
+  Widget _buildTextContent() {
+    return Text(
+      message.text,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+      ),
+    );
+  }
+
+  Widget _buildAudioContent() {
+    if (message.audioPath == null) {
+      return const Text(
+        "Audio message unavailable",
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Voice Message",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        AudioPlayerWidget(audioPath: message.audioPath!),
+      ],
+    );
+  }
+
+  Widget _buildImageContent() {
+    if (message.imagePath == null) {
+      return const Text(
+        "Image unavailable",
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.file(
+            File(message.imagePath!),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                height: 150,
+                width: double.infinity,
+                color: Colors.grey.shade800,
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.broken_image,
+                        color: Colors.grey.shade600, size: 48),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Failed to load image",
+                      style: TextStyle(color: Colors.grey.shade400),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          path.basename(message.imagePath!),
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVideoContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 160,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.play_circle_fill,
+              size: 48,
+              color: Colors.white.withOpacity(0.8),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          "Video message (tap to play)",
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
   }
 }
