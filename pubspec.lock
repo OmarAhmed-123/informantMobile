@@ -97,6 +97,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  cached_network_image:
+    dependency: "direct main"
+    description:
+      name: cached_network_image
+      sha256: "4a5d8d2c728b0f3d0245f69f921d7be90cae4c2fd5288f773088672c0893f819"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
+  cached_network_image_platform_interface:
+    dependency: transitive
+    description:
+      name: cached_network_image_platform_interface
+      sha256: "35814b016e37fbdc91f7ae18c8caf49ba5c88501813f73ce8a07027a395e2829"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
+  cached_network_image_web:
+    dependency: transitive
+    description:
+      name: cached_network_image_web
+      sha256: "6322dde7a5ad92202e64df659241104a43db20ed594c41ca18de1014598d7996"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   carousel_slider:
     dependency: "direct main"
     description:
@@ -153,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.8"
+  country_code_picker:
+    dependency: "direct main"
+    description:
+      name: country_code_picker
+      sha256: ee216486da1db8e3c5688f9650c99472ab6a4025ed1ea0c5a54ae6063143d90d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   cross_file:
     dependency: transitive
     description:
@@ -185,6 +217,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  diacritic:
+    dependency: transitive
+    description:
+      name: diacritic
+      sha256: "12981945ec38931748836cd76f2b38773118d0baef3c68404bdfde9566147876"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
   dio:
     dependency: "direct main"
     description:
@@ -302,6 +342,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.0"
+  flutter_cache_manager:
+    dependency: transitive
+    description:
+      name: flutter_cache_manager
+      sha256: "400b6592f16a4409a7f2bb929a9a7e38c72cceb8ffb99ee57bbf2cb2cecf8386"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.1"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -382,6 +430,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  flutter_sound:
+    dependency: "direct main"
+    description:
+      name: flutter_sound
+      sha256: ef89477f6e8ce2fa395158ebc4a8b11982e3ada440b4021c06fd97a4e771554b
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.28.0"
+  flutter_sound_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_sound_platform_interface
+      sha256: "3394d7e664a09796818014ff85a81db0dec397f4c286cbe52f8783886fa5a497"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.28.0"
+  flutter_sound_web:
+    dependency: transitive
+    description:
+      name: flutter_sound_web
+      sha256: "4e10c94a8574bd93bb8668af59bf76f5312a890bccd3778d73168a7133217dc5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.28.0"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -576,6 +648,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.11"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: be4b23575aac7ebf01f225a241eb7f6b5641eeaf43c6a8613510fc2f8cf187d1
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   logging:
     dependency: transitive
     description:
@@ -640,6 +720,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  octo_image:
+    dependency: transitive
+    description:
+      name: octo_image
+      sha256: "34faa6639a78c7e3cbe79be6f9f96535867e879748ade7d17c9b1ae7536293bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   path:
     dependency: transitive
     description:
@@ -840,6 +928,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.28.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -904,6 +1000,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   signalr_core:
     dependency: "direct main"
     description:
@@ -912,11 +1016,27 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  signalr_netcore:
+    dependency: "direct main"
+    description:
+      name: signalr_netcore
+      sha256: "02d2e399c5a4b5587dfaa0a1da23502f7f438e8b92ac20bc5e652a796600d11a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.7+2-nullsafety.3"
   sky_engine:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      sha256: b21ebb8bc39cf72d11c7cfd809162a48c3800668ced1c9da3aade13a32cf6c1c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   source_span:
     dependency: transitive
     description:
@@ -933,6 +1053,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  sqflite:
+    dependency: transitive
+    description:
+      name: sqflite
+      sha256: a43e5a27235518c03ca238e7b4732cf35eabe863a369ceba6cbefa537a66f16d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.3+1"
+  sqflite_common:
+    dependency: transitive
+    description:
+      name: sqflite_common
+      sha256: "3da423ce7baf868be70e2c0976c28a1bb2f73644268b7ffa7d2e08eab71f16a4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.4"
   sse:
     dependency: transitive
     description:

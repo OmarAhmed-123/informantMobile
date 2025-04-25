@@ -1,141 +1,5 @@
-/*
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:graduation___part1/views/autoLogin.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../view_models/auth_view_model.dart';
-
-class EmailVerificationView extends StatefulWidget {
-  const EmailVerificationView({Key? key}) : super(key: key);
-
-  @override
-  emailVerificationViewS createState() => emailVerificationViewS();
-}
-
-class emailVerificationViewS extends State<EmailVerificationView> {
-  final formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Email Verification'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.purple[700]!, Colors.blue[500]!],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.7),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.purple[700],
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      final prefs = await SharedPreferences.getInstance();
-                      final authViewModel =
-                          Provider.of<AuthViewModel>(context, listen: false);
-                      authViewModel.email = emailController.text;
-                      AutoLogin.saveEmail(emailController.text);
-
-                      final flag = prefs.getInt("flag");
-                      if (flag == 1) {
-                        HttpRequest.post(
-                          {
-                            "endPoint":
-                                "/user/forgot?email=${emailController.text}",
-                          },
-                        ).then((res) async {
-                          print("errorzeft${res.statusCode}");
-                          if (res.statusCode == 200) {
-                            final Map<String, dynamic> data =
-                                json.decode(res.toString());
-                            await prefs.setString(
-                                'pToken', data["messages"]["content"] ?? "");
-                            Navigator.pushNamed(context, '/otpForForget');
-                          }
-                        }).catchError((error) {
-                          print("Error: $error");
-                        });
-                      }
-                      if (flag == 2) {
-                        HttpRequest.post(
-                          {
-                            "endPoint":
-                                "/user/sendotp?email=${emailController.text}",
-                          },
-                        ).then((res) {
-                          if (res.statusCode == 204) {
-                            Navigator.pushNamed(context, '/otp_verification');
-                          }
-                        }).catchError((error) {
-                          print("Error: $error");
-                        });
-                      }
-                    }
-                  },
-                  child: const Text('Send Verification Code'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-*/
-
-
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:graduation___part1/views/autoLogin.dart';
-import 'package:graduation___part1/views/httpCodeG.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../view_models/auth_view_model.dart';
@@ -143,7 +7,6 @@ import 'auth_cubit.dart' as auth_cubit;
 
 class EmailVerificationView extends StatefulWidget {
   const EmailVerificationView({super.key});
-
   @override
   EmailVerificationViewState createState() => EmailVerificationViewState();
 }
@@ -151,7 +14,6 @@ class EmailVerificationView extends StatefulWidget {
 class EmailVerificationViewState extends State<EmailVerificationView> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
-
   @override
   void dispose() {
     emailController.dispose();
@@ -162,74 +24,183 @@ class EmailVerificationViewState extends State<EmailVerificationView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Email Verification'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'Email Verification',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.purple[700]!, Colors.blue[500]!],
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.black,
+              Colors.blue.shade900.withOpacity(0.8),
+              Colors.black,
+            ],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.7),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Card(
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  color: Colors.white.withOpacity(0.9),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.email_outlined,
+                            size: 64,
+                            color: Color(0xFF5E35B1),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'Verify Your Email',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF5E35B1),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'We will send you a verification code',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          TextFormField(
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              labelText: 'Email Address',
+                              hintText: 'Enter your email',
+                              prefixIcon:
+                                  Icon(Icons.email, color: Color(0xFF5E35B1)),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                    BorderSide(color: Color(0xFF5E35B1)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Color(0xFF5E35B1), width: 2),
+                              ),
+                              fillColor: Colors.grey[100],
+                              filled: true,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              final emailRegex =
+                                  RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                              if (!emailRegex.hasMatch(value)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Color(0xFF5E35B1),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 32, vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              elevation: 5,
+                            ),
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Color(0xFF5E35B1)),
+                                      ),
+                                    );
+                                  },
+                                );
+                                try {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  final authViewModel =
+                                      Provider.of<AuthViewModel>(context,
+                                          listen: false);
+                                  authViewModel.email = emailController.text;
+                                  AutoLogin.saveEmail(emailController.text);
+                                  Navigator.pop(context);
+                                  final flag = prefs.getInt("flag");
+                                  if (flag == 1) {
+                                    context
+                                        .read<auth_cubit.AuthCubit>()
+                                        .forgotPassword(
+                                            context, emailController.text);
+                                  } else if (flag == 2) {
+                                    context
+                                        .read<auth_cubit.AuthCubit>()
+                                        .sendOtp(emailController.text, context);
+                                  }
+                                } catch (e) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'An error occurred. Please try again.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Send Verification Code',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Icon(Icons.send),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.purple[700],
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      final prefs = await SharedPreferences.getInstance();
-                      final authViewModel =
-                          Provider.of<AuthViewModel>(context, listen: false);
-                      authViewModel.email = emailController.text;
-                      AutoLogin.saveEmail(emailController.text);
-
-                      final flag = prefs.getInt("flag");
-                      if (flag == 1) {
-                        context
-                            .read<auth_cubit.AuthCubit>()
-                            .forgotPassword(emailController.text);
-                      } else if (flag == 2) {
-                        context
-                            .read<auth_cubit.AuthCubit>()
-                            .sendOtp(emailController.text);
-                      }
-                    }
-                  },
-                  child: const Text('Send Verification Code'),
-                ),
-              ],
+              ),
             ),
           ),
         ),

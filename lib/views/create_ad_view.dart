@@ -8,8 +8,6 @@ import 'package:graduation___part1/views/auth_cubit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:graduation___part1/views/httpCodeG.dart';
-import 'package:graduation___part1/views/home_view.dart';
-import 'package:graduation___part1/views/barOfHome.dart';
 
 class Plan {
   final int id;
@@ -41,7 +39,7 @@ class CreateAdViewState extends State<CreateAdView>
   final descriptionController = TextEditingController();
   final linkController = TextEditingController();
   late String imageAd;
-
+  bool _isLoading = false;
   List<File> mediaFiles = [];
   List<bool> video = [];
   List<VideoPlayerController?> videoControllers = [];
@@ -545,21 +543,11 @@ class CreateAdViewState extends State<CreateAdView>
           backgroundColor: Colors.black,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.home, color: Colors.white),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeView()),
-            ),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeView1()),
-              ),
-            ),
-          ],
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -644,15 +632,24 @@ class CreateAdViewState extends State<CreateAdView>
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            onPressed: _createAd,
-                            child: const Text(
-                              'Create Ad',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                            onPressed: _isLoading ? null : _createAd,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Create Ad',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       );
@@ -669,23 +666,48 @@ class CreateAdViewState extends State<CreateAdView>
 
   Future<void> _createAd() async {
     if (formKey.currentState!.validate() && selectedPlan != null) {
-      context.read<AuthCubit>().createAd(
-          name: nameController.text,
-          details: descriptionController.text,
-          imageName: "1.jpeg",
-          images: imageAd,
-          planNum: selectedPlan!.id,
-          setToPublic: false,
-          link: linkController.text,
-          context: context);
-      Navigator.pop(context);
-    } else if (selectedPlan == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a plan'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // Set loading state to true
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        List<String> myNames=[];
+int i=1;
+List<String> myMedia = [];
+  for (var file in mediaFiles) {
+
+    List<int> fileBytes = await file.readAsBytes();
+
+    String base64String = base64Encode(fileBytes);
+
+    myMedia.add(base64String);
+
+myNames.add("${i++}.jpeg"); 
+        }
+        final cubit = context.read<AuthCubit>();
+        await cubit.createAd(
+            name: nameController.text,
+            details: descriptionController.text,
+            imageName:myNames,
+            planNum: selectedPlan!.id,
+            setToPublic: false,
+            link: linkController.text??"https://infinitely-native-lamprey.ngrok-free.app/swagger",
+            medias: myMedia,
+            context: context);
+      } catch (e) {
+        // Handle any errors if needed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error creating ad: $e')),
+        );
+      } finally {
+        // Set loading state back to false when done
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
     }
   }
 
