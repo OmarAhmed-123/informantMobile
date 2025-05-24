@@ -5,7 +5,7 @@ To test the Paymob payment integration in the application, use the following tes
 
 ## Test Card Details
 - **Cardholder Name**: TEST ACCOUNT
-- **Card Number**: 521111111111111111111111
+- **Card Number**: 4111111111111111
 - **Expiry Date**: 12/25
 - **CVV**: 123
 
